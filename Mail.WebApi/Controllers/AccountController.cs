@@ -33,6 +33,8 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
+        
+        
         [HttpPost("registgroup")]
         public async Task<IActionResult> RegisterGroup(GroupVM group)
         {
@@ -41,31 +43,38 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet("getuserall/{groupname}")]
-        public async Task<IActionResult> GetUserAll(String groupName)
+        
+        
+        [HttpGet("getuserongroup/{groupId}")]
+        public async Task<IActionResult> GetUserGroup(long groupId)
         {
-            var users = await _userService.GetAll(groupName);
-            IActionResult result = users == null ? NotFound() : Ok(users);
-
-            //return result;
-            return Ok();
-        }
-
-        [HttpGet("getgroupall")]
-        public async Task<IActionResult> GetGroupAll()
-        {
-            var groups = await _groupService.GetAll();
-            IActionResult result = groups == null ? NotFound() : Ok(groups);
+            var users = await _userService.GetAll(groupId);
+            IActionResult result = users == null ? NotFound() : Ok(_mapper.Map<List<UserVM>>(users));
 
             return result;
         }
 
-        //[HttpGet("getuserid/{id}")]
-        //public async Task<IActionResult> GetId(long id)
-        //{
+        [HttpGet("getuserall")]
+        public async Task<IActionResult> GetUserAll()
+        {
+            var users = await _userService.GetAll();
+            IActionResult result = users == null ? NotFound() : Ok(_mapper.Map<List<UserVM>>(users));
 
+            return result;
+        }
 
-        //    return Ok();
-        //}
+        
+        
+        [HttpGet("getgroupall")]
+        public async Task<IActionResult> GetGroupAll()
+        {
+            var groups = await _groupService.GetAll();
+            IActionResult result = groups == null ? NotFound() : Ok(_mapper.Map<List<GroupVM>>(groups));
+
+            return result;
+        }
+
+        
+
     }
 }

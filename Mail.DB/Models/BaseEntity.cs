@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mail.DTO.Models
+namespace Mail.DB.Models
 {
     public class BaseEntity<T> : IBaseEntity<T>
     {

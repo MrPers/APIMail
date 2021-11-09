@@ -17,13 +17,11 @@ namespace Mail.Repository
         {
         }
 
-        public async Task<List<UserDto>> findAllUsersOnGroup(String groupName)
+        public async Task<List<UserDto>> findAllUsersOnGroup(long groupId)
         {
-            //var users = _context.Users.Include(p => p.Groups).Where(p => p.Name == groupName);
-            
-            //return _mapper.Map<List<UserDto>>(users);
-            return null;
-        }
+            var users = _context.Users.Include(p => p.Groups).Where(p => p.Id == groupId).ToList();
 
+            return _mapper.Map<List<UserDto>>(users);
+        }
     }
 }

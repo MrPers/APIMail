@@ -19,6 +19,21 @@ namespace Mail.DB.Migrations
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.Property<long>("GroupsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UsersId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("GroupsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("GroupUser");
+                });
+
             modelBuilder.Entity("Mail.DB.Models.Dispatch", b =>
                 {
                     b.Property<long>("Id")
@@ -92,21 +107,19 @@ namespace Mail.DB.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.UserGroup", b =>
+            modelBuilder.Entity("GroupUser", b =>
                 {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.HasOne("Mail.DB.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<long>("GroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(1L);
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("UserGroup");
+                    b.HasOne("Mail.DB.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Mail.DB.Models.Dispatch", b =>
@@ -118,35 +131,9 @@ namespace Mail.DB.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.UserGroup", b =>
-                {
-                    b.HasOne("Mail.DB.Models.Group", "Group")
-                        .WithMany("UserGroups")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Mail.DB.Models.User", "User")
-                        .WithMany("UserGroups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Mail.DB.Models.Group", b =>
-                {
-                    b.Navigation("UserGroups");
-                });
-
             modelBuilder.Entity("Mail.DB.Models.User", b =>
                 {
                     b.Navigation("Dispatchs");
-
-                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,6 +14,6 @@ namespace Mail.DB.Models
     {
         [MaxLength(50)]
         public string Name { get; set; }
-        public List<UserGroup> UserGroups { get; set; }// = new List<User>();
+        public List<User> Users { get; set; } = new List<User>();
     }
 }

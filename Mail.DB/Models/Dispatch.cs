@@ -14,7 +14,6 @@ namespace Mail.DB.Models
         [Required] 
         public DateTime DepartureDate { get; set; }
         public bool? Status { get; set; }
-        public long UserId { get; set; }
-        
+        public long UserId { get; set; }        
     }
 }

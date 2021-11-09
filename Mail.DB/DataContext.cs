@@ -26,23 +26,6 @@ namespace Mail.DB
                 .Property(b => b.Status)
                 .HasDefaultValue(false);
 
-            modelBuilder.Entity<UserGroup>()
-                .HasKey(t => new { t.UserId, t.GroupId });
-
-            modelBuilder.Entity<UserGroup>()
-                .HasOne(pt => pt.Group)
-                .WithMany(p => p.UserGroups)
-                .HasForeignKey(pt => pt.GroupId);
-
-            modelBuilder.Entity<UserGroup>()
-                .HasOne(pt => pt.User)
-                .WithMany(t => t.UserGroups)
-                .HasForeignKey(pt => pt.UserId);
-
-            modelBuilder.Entity<UserGroup>()
-                .Property(pt => pt.GroupId)
-                .HasDefaultValue(1);
-
             base.OnModelCreating(modelBuilder);
         }
     }

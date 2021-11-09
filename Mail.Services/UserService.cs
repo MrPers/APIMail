@@ -24,11 +24,16 @@ namespace Mail.Services
             await _userRepository.Add(user);
         }
 
-        public async Task<List<UserDto>> GetAll(String groupName)
+        public async Task<List<UserDto>> GetAll()
         {
+            var users = await _userRepository.GetAll();
 
-            var group = _userRepository.GetAll();   ///
-            var users = _userRepository.GetAll();
+            return users;
+        }
+
+        public async Task<List<UserDto>> GetAll(long groupId)
+        {
+            var users = _userRepository.findAllUsersOnGroup(groupId);
 
             return await users;
         }

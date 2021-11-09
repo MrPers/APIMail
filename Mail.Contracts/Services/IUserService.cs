@@ -10,7 +10,8 @@ namespace Mail.Contracts.Services
     public interface IUserService
     {
         Task RegisterAsync(UserDto user);
-        Task<List<UserDto>> GetAll(String groupName);
+        Task<List<UserDto>> GetAll();
+        Task<List<UserDto>> GetAll(long groupId);
 
     }
 }

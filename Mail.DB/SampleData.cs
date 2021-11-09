@@ -19,14 +19,14 @@ namespace Mail.DB
                 };
 
                 Group[] groups = new Group[] {
-                    new Group {Name = "Oll Users" },
+                    //new Group {Name = "Oll Users" },
                     new Group {Name = "Test Name"}
                 };
 
                 context.Groups.AddRange(groups);
                 context.Users.AddRange(users);
 
-                //users[0].Groups.Add(groups[0]);
+                users[0].Groups.Add(groups[0]);
                 //users[1].Groups.Add(groups[0]);
                 //users[0].Groups.Add(groups[1]);
 

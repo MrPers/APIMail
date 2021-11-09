@@ -31,5 +31,11 @@ namespace Mail.Services
             return groups;
         }
 
+        //public async Task<long> GetId(string groupName)
+        //{
+        //    var groupId = await _groupRepository.GetId(groupName);
+
+        //    return groupId;
+        //}
     }
 }

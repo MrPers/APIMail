@@ -7,6 +7,7 @@ namespace Mail.WebApi.Models
 {
     public class GroupVM
     {
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

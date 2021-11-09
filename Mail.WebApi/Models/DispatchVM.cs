@@ -7,8 +7,9 @@ namespace Mail.WebApi.Models
 {
     public class DispatchVM
     {
+        public long Id { get; set; }
         public DateTime DepartureDate { get; set; }
         public bool Status { get; set; }
-        public UserVM userVM { get; set; }
+        public long UserId { get; set; }
     }
 }

@@ -56,24 +56,24 @@ namespace Mail.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserGroup",
+                name: "GroupUser",
                 columns: table => new
                 {
-                    GroupId = table.Column<long>(type: "bigint", nullable: false, defaultValue: 1L),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    GroupsId = table.Column<long>(type: "bigint", nullable: false),
+                    UsersId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGroup", x => new { x.UserId, x.GroupId });
+                    table.PrimaryKey("PK_GroupUser", x => new { x.GroupsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_UserGroup_Groups_GroupId",
-                        column: x => x.GroupId,
+                        name: "FK_GroupUser_Groups_GroupsId",
+                        column: x => x.GroupsId,
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserGroup_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_GroupUser_Users_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -92,9 +92,9 @@ namespace Mail.DB.Migrations
                 filter: "[Name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserGroup_GroupId",
-                table: "UserGroup",
-                column: "GroupId");
+                name: "IX_GroupUser_UsersId",
+                table: "GroupUser",
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -110,7 +110,7 @@ namespace Mail.DB.Migrations
                 name: "Dispatchs");
 
             migrationBuilder.DropTable(
-                name: "UserGroup");
+                name: "GroupUser");
 
             migrationBuilder.DropTable(
                 name: "Groups");

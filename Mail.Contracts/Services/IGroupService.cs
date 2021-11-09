@@ -11,6 +11,7 @@ namespace Mail.Contracts.Services
     {
         Task RegisterAsync(GroupDto group);
         Task<List<GroupDto>> GetAll();
+        //Task<long> GetId(String groupName);
 
     }
 }
