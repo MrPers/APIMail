@@ -11,7 +11,9 @@ namespace Mail.Contracts.Services
     {
         Task RegisterAsync(UserDto user);
         Task<List<UserDto>> GetAll();
+        Task Delete(long Id);
         Task<List<UserDto>> GetAll(long groupId);
+        Task Update(long Id, UserDto table);
 
     }
 }

@@ -32,8 +32,6 @@ namespace Mail.WebApi.Controllers
 
             return Ok();
         }
-
-        
         
         [HttpPost("registgroup")]
         public async Task<IActionResult> RegisterGroup(GroupVM group)
@@ -74,7 +72,38 @@ namespace Mail.WebApi.Controllers
             return result;
         }
 
-        
+        [HttpGet("deletegroup/{Id}")]
+        public async Task<IActionResult> DeleteGroup(long Id)
+        {
+            await _groupService.Delete(Id);
 
+            return Ok();
+        }
+
+        [HttpGet("deleteuser/{Id}")]
+        public async Task<IActionResult> DeleteUser(long Id)
+        {
+            await _userService.Delete(Id);
+
+            return Ok();
+        }
+
+        [HttpPost("updategroup")]
+        public async Task<IActionResult> UpdateGroup([FromForm] GroupVM group)
+        {
+            await _groupService.Update(group.Id, _mapper.Map<GroupDto>(group));
+
+            return Ok();
+        }
+
+        [HttpPost("updateuser")]
+        public async Task<IActionResult> UpdateUser([FromForm]UserVM user)
+        {
+            await _userService.Update(user.Id, _mapper.Map<UserDto>(user));
+
+            return Ok();
+        }
+    
+        
     }
 }

@@ -37,5 +37,15 @@ namespace Mail.Services
 
             return await users;
         }
+
+        public async Task Delete(long Id)
+        {
+            await _userRepository.Delete(Id);
+        }
+
+        public async Task Update(long Id, UserDto table)
+        {
+            await _userRepository.Update(Id, table);
+        }
     }
 }

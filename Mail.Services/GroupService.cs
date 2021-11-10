@@ -31,11 +31,14 @@ namespace Mail.Services
             return groups;
         }
 
-        //public async Task<long> GetId(string groupName)
-        //{
-        //    var groupId = await _groupRepository.GetId(groupName);
+        public async Task Delete(long Id)
+        {
+            await _groupRepository.Delete(Id);
+        }
 
-        //    return groupId;
-        //}
+        public async Task Update(long Id, GroupDto table)
+        {
+            await _groupRepository.Update(Id, table);
+        }
     }
 }

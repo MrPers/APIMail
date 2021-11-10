@@ -27,10 +27,17 @@ namespace Mail.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Apdate(TId Id)
+        public async Task Update(TId Id, TDto table)
         {
-            _context.Entry<TTable>(_context.Set<TTable>().Find(Id)).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var result = _context.Set<TTable>().Find(Id);
+            if (result != null)
+            {
+                _context.Entry(result).CurrentValues.SetValues(_mapper.Map<TTable>(table));
+                await _context.SaveChangesAsync();
+            }
+
+            //_context.Entry<TTable>(_context.Set<TTable>().Find(Id)).State = EntityState.Modified;
+            //await _context.SaveChangesAsync();
         }
 
         public async Task Delete(TId Id)
