@@ -110,27 +110,17 @@ namespace Mail.WebApi.Controllers
         [HttpPost("sendletter")]
         public async Task<IActionResult> sendLetter(LetterVM letter)
         {
-            await _dispatchService.Add(letter.textLetter, _mapper.Map<UserDto[]>(letter.users));
+            await _dispatchService.Add(letter.textBody, letter.textSubject , _mapper.Map<UserDto[]>(letter.users));
 
             return Ok();
         }
 
-        //[HttpPost("sendletter1")]
-        //public async Task<IActionResult> sendLetter()
-        //{
-        //    Response.StatusCode = 200;
-        //    Response.ContentType = "text/event-stream";
-        //    Response.ContentLength = 10;
+        [HttpGet("statusletter")]
+        public async Task<IActionResult> statusLetter()
+        {
+            var result = await _dispatchService.Status();
 
-        //    var sw = new StreamWriter(Response.Body);
-
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        await Task.Delay(1000);
-        //        await sw.WriteAsync("1");
-        //        await sw.FlushAsync();
-        //    }
-        //    return Ok();
-        //}
+            return Ok(result);
+        }
     }
 }

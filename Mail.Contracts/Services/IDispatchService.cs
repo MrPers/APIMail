@@ -9,7 +9,7 @@ namespace Mail.Contracts.Services
 {
     public interface IDispatchService
     {
-        Task Add(string textLetter, UserDto[] users);
-        Task Status();
+        Task Add(string textBody, string textSubject, UserDto[] users);
+        Task<int> Status();
     }
 }

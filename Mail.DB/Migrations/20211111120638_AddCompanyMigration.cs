@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Mail.DB.Migrations
 {
-    public partial class MigrateDB : Migration
+    public partial class AddCompanyMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

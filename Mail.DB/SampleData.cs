@@ -14,7 +14,7 @@ namespace Mail.DB
             if (!context.Users.Any() || !context.Groups.Any())
             {
                 User[] users = new User[] {
-                     new User{ Name = "TestName1", Surname = "TestSurname1", Email = "iamanton45@gmil.com" },
+                     new User{ Name = "TestName1", Surname = "TestSurname1", Email = "iamanton45@gmail.com" },
                      new User{ Name = "TestName2", Surname = "TestSurname2", Email = "iamanton@ukr.net" },
                 };
 

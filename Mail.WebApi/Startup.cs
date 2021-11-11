@@ -15,6 +15,8 @@ using Mail.Contracts.Repo;
 using Mail.WebApi.Mappings;
 using Mail.Contracts.Services;
 using Mail.Services;
+using Microsoft.Extensions.Logging;
+
 
 namespace Mail.WebApi
 {
@@ -47,12 +49,17 @@ namespace Mail.WebApi
             services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //app.Run(async (context) =>
+            //{
+            //    logger.LogInformation($"Processing request {context.Request.Path}");
+            //});
 
             app.UseRouting();
 

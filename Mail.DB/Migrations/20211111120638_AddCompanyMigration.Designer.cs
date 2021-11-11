@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mail.DB.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211111103412_MigrateDB")]
-    partial class MigrateDB
+    [Migration("20211111120638_AddCompanyMigration")]
+    partial class AddCompanyMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

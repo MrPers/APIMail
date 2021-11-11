@@ -23,25 +23,17 @@ namespace Mail.Services
             _dispatchRepository = dispatchRepository;
         }
 
-        public async Task Status()
+        public async Task<int> Status()
         {
-            //cache.Set(user.Id, user, new MemoryCacheEntryOptions
-            //{
-            //    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-            //});
-
-            //if (!cache.TryGetValue(id, out user))
-            //{
-            //    user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
-            //    if (user != null)
-            //    {
-            //        cache.Set(user.Id, user,
-            //        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
-            //    }
-            //}
+            int result = 0;
+            if (_cache.TryGetValue(1, out int percentageСompletion))
+            {
+                result = percentageСompletion;
+            }
+            return result;
         }
 
-        public async Task Add(string textLetter, UserDto[] users)
+        public async Task Add(string textBody, string textSubject, UserDto[] users)
         {
             try
             {
@@ -52,13 +44,14 @@ namespace Mail.Services
 
                 message.IsBodyHtml = true;
                 message.From = new MailAddress("iamanton45@gmail.com", "Test");
-                message.Subject = textLetter;
-                message.Body = "Test body";
+                message.Subject = textSubject;
+                message.Body = textBody;
 
                 client.Credentials = new NetworkCredential("iamanton45@gmail.com", "1878$zif2112");
                 client.Port = 587;
                 client.EnableSsl = true;
 
+                _cache.Remove(1);
                 for (int i = 0; i < users.Length; i++)
                 {
                     dispatchDtos[i] = new DispatchDto()
@@ -72,8 +65,6 @@ namespace Mail.Services
 
                 for (int i = 0; i < users.Length; i++)
                 {
-                    System.Threading.Thread.Sleep(rand.Next(1, 5) * 1000);
-
                     message.To.Add(users[i].Email);
 
                     client.Send(message);
@@ -81,6 +72,16 @@ namespace Mail.Services
                     dispatchDtos[i].Status = true;
 
                     await _dispatchRepository.Update(dispatchDtos[i].Id, dispatchDtos[i]);
+
+                    if (users.Length > 1)
+                    {
+                        _cache.Set(1, 100 * (i + 1) / users.Length, new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(6)
+                        });
+
+                        System.Threading.Thread.Sleep(rand.Next(3, 5) * 1000);
+                    }
                 }
 
             }
