@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mail.DB.Models
 {
-    public class Dispatch : BaseEntity<uint>
+    public class Dispatch : BaseEntity<long>
     {
         [Required] 
         public DateTime DepartureDate { get; set; }

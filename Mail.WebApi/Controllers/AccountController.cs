@@ -5,6 +5,7 @@ using Mail.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,12 +17,14 @@ namespace Mail.WebApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
+        private readonly IDispatchService _dispatchService;
         private readonly IMapper _mapper;
 
-        public AccountController(IUserService userService, IGroupService groupService, IMapper mapper)
+        public AccountController(IUserService userService, IGroupService groupService, IMapper mapper, IDispatchService dispatchService)
         {
             _userService = userService;
             _groupService = groupService;
+            _dispatchService = dispatchService;
             _mapper = mapper;
         }
 
@@ -103,7 +106,31 @@ namespace Mail.WebApi.Controllers
 
             return Ok();
         }
-    
-        
+
+        [HttpPost("sendletter")]
+        public async Task<IActionResult> sendLetter(LetterVM letter)
+        {
+            await _dispatchService.Add(letter.textLetter, _mapper.Map<UserDto[]>(letter.users));
+
+            return Ok();
+        }
+
+        //[HttpPost("sendletter1")]
+        //public async Task<IActionResult> sendLetter()
+        //{
+        //    Response.StatusCode = 200;
+        //    Response.ContentType = "text/event-stream";
+        //    Response.ContentLength = 10;
+
+        //    var sw = new StreamWriter(Response.Body);
+
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        await Task.Delay(1000);
+        //        await sw.WriteAsync("1");
+        //        await sw.FlushAsync();
+        //    }
+        //    return Ok();
+        //}
     }
 }

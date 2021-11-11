@@ -39,7 +39,8 @@ namespace Mail.DB.Migrations
                 name: "Dispatchs",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false)

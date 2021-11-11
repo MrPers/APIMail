@@ -21,10 +21,12 @@ namespace Mail.Repository
             _mapper = mapper;
         }
 
-        public async Task Add(TDto Dto)
+        public async Task<TId> Add(TDto Dto)
         {
-            await _context.Set<TTable>().AddAsync(_mapper.Map<TTable>(Dto));
+            var time = _mapper.Map<TTable>(Dto);
+            await _context.Set<TTable>().AddAsync(time);
             await _context.SaveChangesAsync();
+            return time.Id;
         }
 
         public async Task Update(TId Id, TDto table)

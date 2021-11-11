@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mail.Contracts\Mail.Contracts.csproj" />
+    <ProjectReference Include="..\Mail.Repository\Mail.Repository.csproj" />
   </ItemGroup>
 
 </Project>

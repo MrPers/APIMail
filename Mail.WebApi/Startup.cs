@@ -31,14 +31,17 @@ namespace Mail.WebApi
         {
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IGroupRepository), typeof(GroupRepository));
+            services.AddScoped(typeof(IDispatchRepository), typeof(DispatchRepository));
 
             services.AddAutoMapper(typeof(UserMapper));
 
+            services.AddScoped<IDispatchService, DispatchService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
 
             services.AddCors();
             services.AddControllers();
+            services.AddMemoryCache();
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
