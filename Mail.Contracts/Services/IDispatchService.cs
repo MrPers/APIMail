@@ -11,5 +11,6 @@ namespace Mail.Contracts.Services
     {
         Task Add(string textBody, string textSubject, UserDto[] users);
         Task<int> Status();
+        Task<List<DispatchDto>> GetDispatches(long id);
     }
 }

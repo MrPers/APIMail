@@ -90,5 +90,13 @@ namespace Mail.Services
                 e.Message.ToString();
             }
         }
+
+        public async Task<List<DispatchDto>> GetDispatches(long id)
+        {
+            //return await _dispatchRepository.GetAll();
+            var result = await _dispatchRepository.findAllById(id);
+
+            return result;
+        }
     }
 }

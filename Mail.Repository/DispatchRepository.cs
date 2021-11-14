@@ -5,6 +5,7 @@ using Mail.DB.Models;
 using Mail.DTO.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,5 +17,11 @@ namespace Mail.Repository
         {
         }
 
+        public async Task<List<DispatchDto>> findAllById(long Id)
+        {
+            var result = await _context.Dispatchs.Where(p => p.UserId == Id).ToListAsync();
+
+            return _mapper.Map<List<DispatchDto>>(result);
+        }
     }
 }

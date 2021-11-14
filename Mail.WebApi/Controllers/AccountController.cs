@@ -29,7 +29,7 @@ namespace Mail.WebApi.Controllers
         }
 
         [HttpPost("registuser")]
-        public async Task<IActionResult> RegisterUser(UserVM user)
+        public async Task<IActionResult> RegisterUser([FromForm] UserVM user)
         {
             await _userService.RegisterAsync(_mapper.Map<UserDto>(user));
 
@@ -37,15 +37,13 @@ namespace Mail.WebApi.Controllers
         }
         
         [HttpPost("registgroup")]
-        public async Task<IActionResult> RegisterGroup(GroupVM group)
+        public async Task<IActionResult> RegisterGroup([FromForm] GroupVM group)
         {
             await _groupService.RegisterAsync(_mapper.Map<GroupDto>(group));
 
             return Ok();
         }
 
-        
-        
         [HttpGet("getuserongroup/{groupId}")]
         public async Task<IActionResult> GetUserGroup(long groupId)
         {
@@ -63,8 +61,6 @@ namespace Mail.WebApi.Controllers
 
             return result;
         }
-
-        
         
         [HttpGet("getgroupall")]
         public async Task<IActionResult> GetGroupAll()
@@ -119,6 +115,14 @@ namespace Mail.WebApi.Controllers
         public async Task<IActionResult> statusLetter()
         {
             var result = await _dispatchService.Status();
+
+            return Ok(result);
+        }
+
+        [HttpGet("historylette/{id}")]
+        public async Task<IActionResult> statusLetter(long id)
+        {
+            var result = await _dispatchService.GetDispatches(id);
 
             return Ok(result);
         }
