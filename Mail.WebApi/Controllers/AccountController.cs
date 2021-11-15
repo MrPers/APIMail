@@ -3,6 +3,7 @@ using Mail.Contracts.Services;
 using Mail.DTO.Models;
 using Mail.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,13 +20,20 @@ namespace Mail.WebApi.Controllers
         private readonly IGroupService _groupService;
         private readonly IDispatchService _dispatchService;
         private readonly IMapper _mapper;
+        private ILogger<AccountController> _logger;
 
-        public AccountController(IUserService userService, IGroupService groupService, IMapper mapper, IDispatchService dispatchService)
+        public AccountController(
+            IUserService userService, IGroupService groupService, 
+            IMapper mapper, IDispatchService dispatchService, 
+            ILogger<AccountController> logger
+            )
         {
             _userService = userService;
             _groupService = groupService;
             _dispatchService = dispatchService;
             _mapper = mapper;
+            _logger = logger;
+            logger.LogInformation("Initialization");
         }
 
         [HttpPost("registuser")]
@@ -49,6 +57,8 @@ namespace Mail.WebApi.Controllers
         {
             var users = await _userService.GetAll(groupId);
             IActionResult result = users == null ? NotFound() : Ok(_mapper.Map<List<UserVM>>(users));
+
+            _logger.LogInformation("Get user from group id = " + groupId);
 
             return result;
         }

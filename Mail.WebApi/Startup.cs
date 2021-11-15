@@ -1,4 +1,4 @@
-using Mail.DB;
+﻿using Mail.DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +31,17 @@ namespace Mail.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //логирование БД
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder
+                      .AddConsole()
+                      .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
+
+                loggingBuilder
+                      .AddDebug();
+            });
+
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IGroupRepository), typeof(GroupRepository));
             services.AddScoped(typeof(IDispatchRepository), typeof(DispatchRepository));
