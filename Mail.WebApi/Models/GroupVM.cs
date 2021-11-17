@@ -12,5 +12,6 @@ namespace Mail.WebApi.Models
         [Required] 
         [MinLength(4)]
         public string Name { get; set; }
+        public long[] UsersId { get; set; }
     }
 }

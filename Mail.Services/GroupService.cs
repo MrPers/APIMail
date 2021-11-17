@@ -11,11 +11,13 @@ namespace Mail.Services
     public class GroupService : IGroupService
     {
         private readonly IGroupRepository _groupRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public GroupService(IGroupRepository groupRepository, IMapper mapper)
+        public GroupService(IUserRepository userRepository, IGroupRepository groupRepository, IMapper mapper)
         {
             _groupRepository = groupRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -27,6 +29,11 @@ namespace Mail.Services
         public async Task<List<GroupDto>> GetAll()
         {
             var groups = await _groupRepository.GetAll();
+            foreach (var item in groups)
+            {
+                item.UsersId = await _userRepository.FindAllUsersOnGroup(item.Id);
+
+            }
 
             return groups;
         }
@@ -39,6 +46,7 @@ namespace Mail.Services
         public async Task Update(long Id, GroupDto table)
         {
             await _groupRepository.Update(Id, table);
+            await _groupRepository.SaveChanges();
         }
     }
 }

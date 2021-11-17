@@ -7,8 +7,8 @@ namespace Mail.WebApi.Models
 {
     public class LetterVM
     {
-        public string textSubject{ get; set; }
-        public string textBody { get; set; }
-        public UserVM[] users { get; set; }
+        public string TextSubject{ get; set; }
+        public string TextBody { get; set; }
+        public UserVM[] Users { get; set; }
     }
 }

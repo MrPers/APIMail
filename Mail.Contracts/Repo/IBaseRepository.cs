@@ -13,5 +13,6 @@ namespace Mail.Contracts.Repo
         Task<TId> Add (TDto Dto);
         Task Update(TId Id, TDto table);
         Task Delete(TId Id);
+        Task SaveChanges();
     }
 }

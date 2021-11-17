@@ -10,6 +10,6 @@ namespace Mail.Contracts.Repo
 {
     public interface IDispatchRepository : IBaseRepository<Dispatch, DispatchDto, long>
     {
-        public Task<List<DispatchDto>> findAllById(long Id);
+        Task<List<DispatchDto>> findAllById(long Id);
     }
 }

@@ -17,11 +17,38 @@ namespace Mail.Repository
         {
         }
 
-        public async Task<List<UserDto>> findAllUsersOnGroup(long groupId)
+        public async Task<long[]> FindAllUsersOnGroup(long groupId)
         {
-            var users = _context.Users.Include(p => p.Groups).Where(p => p.Id == groupId).ToList();
+            var usersId = await _context.Users
+               .Where(p=>p.Groups.Any(y=>y.Id==groupId))
+               .Select(p => p.Id)
+               .ToArrayAsync();
 
-            return _mapper.Map<List<UserDto>>(users);
+            return usersId;
+        }
+
+        public async Task AddInGroups(long groupId, long userId)
+        {
+            _context.Users
+                .Include(p => p.Groups)
+                .FirstOrDefault(p => p.Id == userId)
+                .Groups.Add(
+                    _context.Groups
+                    .FirstOrDefault(p => p.Id == groupId)
+                );
+
+        }
+
+        public async Task DeleteWithGroups(long groupId, long userId)
+        {
+            _context.Users
+                .Include(p => p.Groups)
+                .FirstOrDefault(p => p.Id == userId)
+                .Groups.Remove(
+                    _context.Groups
+                    .FirstOrDefault(p => p.Id == groupId)
+                );
+
         }
     }
 }

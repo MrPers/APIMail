@@ -19,6 +19,7 @@ namespace Mail.WebApi.Mappings
         CreateMap<Group, GroupDto>().ReverseMap();
         CreateMap<DispatchVM, DispatchDto>().ReverseMap();
         CreateMap<Dispatch, DispatchDto>().ReverseMap();
+        //CreateMap<UserGroupVM, UserGroupDto>().ReverseMap();
         }
     }
 }

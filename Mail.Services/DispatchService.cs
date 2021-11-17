@@ -73,6 +73,8 @@ namespace Mail.Services
 
                     await _dispatchRepository.Update(dispatchDtos[i].Id, dispatchDtos[i]);
 
+                    await _dispatchRepository.SaveChanges();
+
                     if (users.Length > 1)
                     {
                         _cache.Set(1, 100 * (i + 1) / users.Length, new MemoryCacheEntryOptions
@@ -80,7 +82,7 @@ namespace Mail.Services
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(6)
                         });
 
-                        System.Threading.Thread.Sleep(rand.Next(3, 5) * 1000);
+                        System.Threading.Thread.Sleep(rand.Next(1, 3) * 1000);
                     }
                 }
 

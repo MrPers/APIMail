@@ -10,6 +10,6 @@ namespace Mail.Contracts.Repo
 {
     public interface IGroupRepository : IBaseRepository<Group, GroupDto, long>
     {
-        //public Task<long> GetId(string groupName);
+
     }
 }

@@ -35,11 +35,8 @@ namespace Mail.Repository
             if (result != null)
             {
                 _context.Entry(result).CurrentValues.SetValues(_mapper.Map<TTable>(table));
-                await _context.SaveChangesAsync();
             }
 
-            //_context.Entry<TTable>(_context.Set<TTable>().Find(Id)).State = EntityState.Modified;
-            //await _context.SaveChangesAsync();
         }
 
         public async Task Delete(TId Id)
@@ -58,6 +55,10 @@ namespace Mail.Repository
         {
             var dbItem = _context.Set<TTable>().Find(Id);
             return _mapper.Map<TDto>(dbItem);
+        }
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
         }
 
     }
