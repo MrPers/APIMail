@@ -21,20 +21,29 @@ namespace Mail.Repository
             _mapper = mapper;
         }
 
-        public async Task<TId> Add(TDto Dto)
+        public async Task<TId> Add(TDto Dto, bool status = true)
         {
             var time = _mapper.Map<TTable>(Dto);
             await _context.Set<TTable>().AddAsync(time);
-            await _context.SaveChangesAsync();
+
+            if (status)
+            {
+                await _context.SaveChangesAsync();
+            }
             return time.Id;
         }
 
-        public async Task Update(TId Id, TDto table)
+        public async Task Update(TId Id, TDto meaning, bool status = true)
         {
             var result = _context.Set<TTable>().Find(Id);
             if (result != null)
             {
-                _context.Entry(result).CurrentValues.SetValues(_mapper.Map<TTable>(table));
+                _context.Entry(result).CurrentValues.SetValues(_mapper.Map<TTable>(meaning));
+                
+                if (status)
+                {
+                    await _context.SaveChangesAsync();
+                }
             }
 
         }
@@ -47,15 +56,16 @@ namespace Mail.Repository
 
         public async Task<List<TDto>> GetAll()
         {
-            var dbItems = _context.Set<TTable>().ToList();
+            var dbItems = await _context.Set<TTable>().ToListAsync();
             return _mapper.Map<List<TDto>>(dbItems);
         }
 
         public async Task<TDto> GetById(TId Id)
         {
-            var dbItem = _context.Set<TTable>().Find(Id);
+            var dbItem = await _context.Set<TTable>().FindAsync(Id);
             return _mapper.Map<TDto>(dbItem);
         }
+        
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

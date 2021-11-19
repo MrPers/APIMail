@@ -19,6 +19,11 @@ namespace Mail.Repository
 
         public async Task<long[]> FindAllUsersOnGroup(long groupId)
         {
+            if (groupId < 1)
+            {
+                throw new ArgumentException(nameof(groupId));
+            }
+
             var usersId = await _context.Users
                .Where(p=>p.Groups.Any(y=>y.Id==groupId))
                .Select(p => p.Id)
@@ -29,10 +34,20 @@ namespace Mail.Repository
 
         public async Task AddInGroups(long groupId, long userId)
         {
-            _context.Users
+            if (groupId < 1)
+            {
+                throw new ArgumentException(nameof(groupId));
+            }
+            if (userId < 1)
+            {
+                throw new ArgumentException(nameof(userId));
+            }
+
+            var f = await _context.Users
                 .Include(p => p.Groups)
-                .FirstOrDefault(p => p.Id == userId)
-                .Groups.Add(
+                .FirstOrDefaultAsync(p => p.Id == userId);
+
+                f.Groups.Add(
                     _context.Groups
                     .FirstOrDefault(p => p.Id == groupId)
                 );
@@ -41,10 +56,19 @@ namespace Mail.Repository
 
         public async Task DeleteWithGroups(long groupId, long userId)
         {
-            _context.Users
+            if (groupId < 1)
+            {
+                throw new ArgumentException(nameof(groupId));
+            }
+            if (userId < 1)
+            {
+                throw new ArgumentException(nameof(userId));
+            }
+
+            var f = await _context.Users
                 .Include(p => p.Groups)
-                .FirstOrDefault(p => p.Id == userId)
-                .Groups.Remove(
+                .FirstOrDefaultAsync(p => p.Id == userId);
+                f.Groups.Remove(
                     _context.Groups
                     .FirstOrDefault(p => p.Id == groupId)
                 );

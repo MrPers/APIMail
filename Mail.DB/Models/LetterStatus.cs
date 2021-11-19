@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace Mail.DB.Models
 {
-    public class Dispatch : BaseEntity<long>
+    public class LetterStatus : BaseEntity<long>
     {
         [Required] 
         public DateTime DepartureDate { get; set; }
         public bool? Status { get; set; }
+        [Required] 
         public long UserId { get; set; }        
     }
 }

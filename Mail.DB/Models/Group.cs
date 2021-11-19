@@ -13,7 +13,8 @@ namespace Mail.DB.Models
     public class Group : BaseEntity<long>
     {
         [MaxLength(50)]
+        [Required]
         public string Name { get; set; }
-        public List<User> Users { get; set; }
+        public List<User> Users { get; set; } = new List<User>();
     }
 }

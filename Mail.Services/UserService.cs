@@ -2,6 +2,7 @@
 using Mail.Contracts.Repo;
 using Mail.Contracts.Services;
 using Mail.DTO.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,19 +11,20 @@ namespace Mail.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IGroupRepository _groupRepository;
-        private readonly IMapper _mapper;
+        private IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository, IGroupRepository groupRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _mapper = mapper;
-            _groupRepository = groupRepository;
         }
 
         public async Task RegisterAsync(UserDto user)
         {
+            if (user==null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
             await _userRepository.Add(user);
         }
 
@@ -33,21 +35,49 @@ namespace Mail.Services
             return users;
         }
 
-        public async Task Delete(long Id)
+        public async Task Delete(long id)
         {
-            await _userRepository.Delete(Id);
+            if (id < 1)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            await _userRepository.Delete(id);
         }
 
-        public async Task Update(long Id, UserDto table)
+        public async Task Update(long id, UserDto user)
         {
-            await _userRepository.Update(Id, table);
-            await _userRepository.SaveChanges();
+            if (id < 1)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            await _userRepository.Update(id, user);
         }
 
         public async Task AddInGroups(long IdGroup, long[] IdUsers)
         {
+            if (IdGroup < 1)
+            {
+                throw new ArgumentException(nameof(IdGroup));
+            }
+
+            if (IdUsers.Length == 0)
+            {
+                throw new ArgumentException(nameof(IdUsers));
+            }
+
             for (int i = 0; i < IdUsers.Length; i++)
             {
+                if (IdUsers[i] < 1)
+                {
+                    throw new ArgumentException(nameof(IdUsers));
+                }
 
                 await _userRepository.AddInGroups(IdGroup, IdUsers[i]);
             }
@@ -57,8 +87,22 @@ namespace Mail.Services
 
         public async Task DeleteWithGroups(long IdGroup, long[] IdUsers)
         {
+            if (IdGroup < 1)
+            {
+                throw new ArgumentException(nameof(IdGroup));
+            }
+
+            if (IdUsers.Length == 0)
+            {
+                throw new ArgumentException(nameof(IdUsers));
+            }
+
             for (int i = 0; i < IdUsers.Length; i++)
             {
+                if (IdUsers[i] < 1)
+                {
+                    throw new ArgumentException(nameof(IdUsers));
+                }
 
                 await _userRepository.DeleteWithGroups(IdGroup, IdUsers[i]);
             }

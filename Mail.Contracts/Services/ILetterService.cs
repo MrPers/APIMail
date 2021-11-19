@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Mail.Contracts.Services
 {
-    public interface IDispatchService
+    public interface ILetterService
     {
         Task Add(string textBody, string textSubject, UserDto[] users);
-        Task<int> Status();
-        Task<List<DispatchDto>> GetDispatches(long id);
+        int Status();
+        Task<List<LetterStatusDto>> GetDispatches(long id);
     }
 }

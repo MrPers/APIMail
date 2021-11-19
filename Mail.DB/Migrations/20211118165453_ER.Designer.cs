@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mail.DB.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211111120638_AddCompanyMigration")]
-    partial class AddCompanyMigration
+    [Migration("20211118165453_ER")]
+    partial class ER
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,27 @@ namespace Mail.DB.Migrations
                     b.ToTable("GroupUser");
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.Dispatch", b =>
+            modelBuilder.Entity("Mail.DB.Models.Group", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Mail.DB.Models.LetterStatus", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,26 +81,6 @@ namespace Mail.DB.Migrations
                     b.ToTable("Dispatchs");
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.Group", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("Mail.DB.Models.User", b =>
                 {
                     b.Property<long>("Id")
@@ -89,22 +89,24 @@ namespace Mail.DB.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -124,7 +126,7 @@ namespace Mail.DB.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.Dispatch", b =>
+            modelBuilder.Entity("Mail.DB.Models.LetterStatus", b =>
                 {
                     b.HasOne("Mail.DB.Models.User", null)
                         .WithMany("Dispatchs")

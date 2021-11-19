@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Mail.WebApi.Models
+namespace Mail.DTO.Models
 {
-    public class DispatchVM
+    public class LetterStatusDto
     {
         public long Id { get; set; }
-        [Required] 
         public DateTime DepartureDate { get; set; }
         public bool Status { get; set; }
-        [Required] 
         public long UserId { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Mail.DB
     public class DataContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Dispatch> Dispatchs { get; set; }
+        public DbSet<LetterStatus> Dispatchs { get; set; }
         public DbSet<Group> Groups { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options)
@@ -22,7 +22,7 @@ namespace Mail.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Dispatch>()
+            modelBuilder.Entity<LetterStatus>()
                 .Property(b => b.Status)
                 .HasDefaultValue(false);
 

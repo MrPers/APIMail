@@ -12,6 +12,6 @@ namespace Mail.Contracts.Services
         Task RegisterAsync(GroupDto group);
         Task<List<GroupDto>> GetAll();
         Task Delete(long Id);
-        Task Update(long Id, GroupDto table);
+        Task Update(long Id, GroupDto group);
     }
 }

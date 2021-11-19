@@ -44,11 +44,11 @@ namespace Mail.WebApi
 
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IGroupRepository), typeof(GroupRepository));
-            services.AddScoped(typeof(IDispatchRepository), typeof(DispatchRepository));
+            services.AddScoped(typeof(ILetterRepository), typeof(LetterRepository));
 
             services.AddAutoMapper(typeof(UserMapper));
 
-            services.AddScoped<IDispatchService, DispatchService>();
+            services.AddScoped<ILetterService, LetterService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
 
@@ -66,11 +66,6 @@ namespace Mail.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //app.Run(async (context) =>
-            //{
-            //    logger.LogInformation($"Processing request {context.Request.Path}");
-            //});
 
             app.UseRouting();
 

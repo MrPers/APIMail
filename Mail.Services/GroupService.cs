@@ -12,17 +12,20 @@ namespace Mail.Services
     {
         private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
 
-        public GroupService(IUserRepository userRepository, IGroupRepository groupRepository, IMapper mapper)
+        public GroupService(IUserRepository userRepository, IGroupRepository groupRepository)
         {
             _groupRepository = groupRepository;
             _userRepository = userRepository;
-            _mapper = mapper;
         }
 
         public async Task RegisterAsync(GroupDto group)
         {
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
+
             await _groupRepository.Add(group);
         }
 
@@ -38,15 +41,28 @@ namespace Mail.Services
             return groups;
         }
 
-        public async Task Delete(long Id)
+        public async Task Delete(long id)
         {
-            await _groupRepository.Delete(Id);
+            if (id < 1)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            await _groupRepository.Delete(id);
         }
 
-        public async Task Update(long Id, GroupDto table)
+        public async Task Update(long id, GroupDto group)
         {
-            await _groupRepository.Update(Id, table);
-            await _groupRepository.SaveChanges();
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
+            if (id < 1)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            await _groupRepository.Update(id, group);
         }
     }
 }

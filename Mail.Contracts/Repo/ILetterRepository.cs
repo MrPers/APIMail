@@ -8,8 +8,8 @@ using Mail.DTO.Models;
 
 namespace Mail.Contracts.Repo
 {
-    public interface IDispatchRepository : IBaseRepository<Dispatch, DispatchDto, long>
+    public interface ILetterRepository : IBaseRepository<LetterStatus, LetterStatusDto, long>
     {
-        Task<List<DispatchDto>> findAllById(long Id);
+        Task<List<LetterStatusDto>> findAllById(long Id);
     }
 }
