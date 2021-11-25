@@ -9,8 +9,9 @@ namespace Mail.Contracts.Services
 {
     public interface ILetterService
     {
-        Task Add(string textBody, string textSubject, UserDto[] users);
+        Task SendLetter(string textBody, string textSubject, ICollection<long> users);
         int Status();
-        Task<List<LetterStatusDto>> GetDispatches(long id);
+        Task<ICollection<LetterStatusDto>> StatusLetterByUserId(long id);
+        Task<LetterDto> GetById(long id);
     }
 }

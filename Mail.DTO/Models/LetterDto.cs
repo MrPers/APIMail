@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Mail.WebApi.Models
+namespace Mail.DTO.Models
 {
-    public class LetterVM
+    public class LetterDto
     {
+        public long Id { get; set; }
+        public DateTime DepartureСreation { get; set; }
         public string TextSubject { get; set; }
         public string TextBody { get; set; }
-        [Required]
         public ICollection<long> UsersId { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Mail.DB.Migrations
 {
-    public partial class ER : Migration
+    public partial class AddMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,21 @@ namespace Mail.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Letters",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepartureСreation = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TextSubject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    TextBody = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Letters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -33,27 +48,6 @@ namespace Mail.DB.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Dispatchs",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dispatchs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Dispatchs_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,10 +74,33 @@ namespace Mail.DB.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Dispatchs_UserId",
-                table: "Dispatchs",
-                column: "UserId");
+            migrationBuilder.CreateTable(
+                name: "LetterUsers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LetterId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 11, 25, 13, 51, 4, 114, DateTimeKind.Local).AddTicks(6327))
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LetterUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LetterUsers_Letters_LetterId",
+                        column: x => x.LetterId,
+                        principalTable: "Letters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LetterUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_Name",
@@ -97,6 +114,16 @@ namespace Mail.DB.Migrations
                 column: "UsersId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LetterUsers_LetterId",
+                table: "LetterUsers",
+                column: "LetterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LetterUsers_UserId",
+                table: "LetterUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -106,13 +133,16 @@ namespace Mail.DB.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Dispatchs");
-
-            migrationBuilder.DropTable(
                 name: "GroupUser");
 
             migrationBuilder.DropTable(
+                name: "LetterUsers");
+
+            migrationBuilder.DropTable(
                 name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "Letters");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -15,7 +15,7 @@ namespace Mail.WebApi.Controllers
     [ApiController]
     public class LetterController : ControllerBase
     {
-        private readonly ILetterService _dispatchService;
+        private readonly ILetterService _letterService;
         private readonly IMapper _mapper;
         private ILogger<LetterController> _logger;
 
@@ -25,7 +25,7 @@ namespace Mail.WebApi.Controllers
             IMapper mapper
         )
         {
-            _dispatchService = dispatchService;
+            _letterService = dispatchService;
             _mapper = mapper;
             _logger = logger;
             _logger.LogInformation("Initialization");
@@ -34,7 +34,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("send-letter")]
         public async Task<IActionResult> SendLetter(LetterVM letter)
         {
-            await _dispatchService.Add(letter.TextBody, letter.TextSubject, _mapper.Map<UserDto[]>(letter.Users));
+            await _letterService.SendLetter(letter.TextBody, letter.TextSubject, letter.UsersId);
 
             return Ok();
         }
@@ -42,22 +42,37 @@ namespace Mail.WebApi.Controllers
         [HttpGet("status-letter")]
         public IActionResult statusLetter()
         {            
-            var result = _dispatchService.Status();
+            var result = _letterService.Status();
 
             return Ok(result);
         }
 
         [HttpGet("get-history-lette/{id}")]
-        public async Task<IActionResult> StatusLetterById(long id)
+        public async Task<IActionResult> StatusLetterByUserId(long id)
         {
             if (id < 1)
             {
                 return BadRequest();
             }
 
-            var dispatches = await _dispatchService.GetDispatches(id);
+            var dispatches = await _letterService.StatusLetterByUserId(id);
 
             var result = _mapper.Map<List<LetterStatusVM>>(dispatches);
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-lette/{id}")]
+        public async Task<IActionResult> LetterByHistoryLetteId(long id)
+        {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
+            var dispatches = await _letterService.GetById(id);
+
+            var result = _mapper.Map<LetterVM>(dispatches);
 
             return Ok(result);
         }

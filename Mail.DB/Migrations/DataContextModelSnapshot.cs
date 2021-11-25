@@ -54,7 +54,29 @@ namespace Mail.DB.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.LetterStatus", b =>
+            modelBuilder.Entity("Mail.DB.Models.Letter", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DepartureСreation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TextBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TextSubject")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Letters");
+                });
+
+            modelBuilder.Entity("Mail.DB.Models.LetterUser", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,9 +84,14 @@ namespace Mail.DB.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("DepartureDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 11, 25, 13, 51, 4, 114, DateTimeKind.Local).AddTicks(6327));
 
-                    b.Property<bool?>("Status")
+                    b.Property<long>("LetterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
@@ -74,9 +101,11 @@ namespace Mail.DB.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LetterId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Dispatchs");
+                    b.ToTable("LetterUsers");
                 });
 
             modelBuilder.Entity("Mail.DB.Models.User", b =>
@@ -124,18 +153,33 @@ namespace Mail.DB.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mail.DB.Models.LetterStatus", b =>
+            modelBuilder.Entity("Mail.DB.Models.LetterUser", b =>
                 {
-                    b.HasOne("Mail.DB.Models.User", null)
-                        .WithMany("Dispatchs")
+                    b.HasOne("Mail.DB.Models.Letter", "Letter")
+                        .WithMany("LetterUsers")
+                        .HasForeignKey("LetterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mail.DB.Models.User", "User")
+                        .WithMany("LetterUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Letter");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Mail.DB.Models.Letter", b =>
+                {
+                    b.Navigation("LetterUsers");
                 });
 
             modelBuilder.Entity("Mail.DB.Models.User", b =>
                 {
-                    b.Navigation("Dispatchs");
+                    b.Navigation("LetterUsers");
                 });
 #pragma warning restore 612, 618
         }

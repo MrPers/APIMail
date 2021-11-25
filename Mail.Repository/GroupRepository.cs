@@ -3,10 +3,6 @@ using Mail.Contracts.Repo;
 using Mail.DB;
 using Mail.DB.Models;
 using Mail.DTO.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Mail.Repository
 {

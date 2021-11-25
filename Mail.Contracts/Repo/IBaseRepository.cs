@@ -10,8 +10,9 @@ namespace Mail.Contracts.Repo
     {
         Task<List<TDto>> GetAll();
         Task<TDto> GetById(TId Id);
-        Task<TId> Add(TDto Dto, bool status = true);
-        Task Update(TId Id, TDto meaning, bool status = true); 
+        Task<TId> Add(IEnumerable<TDto> Dto);
+        Task<TId> Add(TDto Dto);
+        Task Update(TId Id, TDto meaning); 
         Task Delete(TId Id);
         Task SaveChanges();
     }

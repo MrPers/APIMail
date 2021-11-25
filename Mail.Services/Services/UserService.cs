@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using Mail.Contracts.Repo;
+﻿using Mail.Contracts.Repo;
 using Mail.Contracts.Services;
 using Mail.DTO.Models;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Mail.Services
+namespace Mail.Business.Services
 {
     public class UserService : IUserService
     {

@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.Repository", "Mail.Rep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.DB", "Mail.DB\Mail.DB.csproj", "{1C392F37-653A-4816-8AAE-07933F4A0D5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.Services", "Mail.Services\Mail.Services.csproj", "{AC3DBBFB-9ADA-4582-A56C-E740B451543D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.Business", "Mail.Services\Mail.Business.csproj", "{AC3DBBFB-9ADA-4582-A56C-E740B451543D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.Contracts", "Mail.Contracts\Mail.Contracts.csproj", "{524E3F06-3A9D-4339-8A0E-310EB431EE99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Tests", "Mail.Tests\Mail.Tests.csproj", "{99ACCF58-7A61-4E85-A087-7512826D7AC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mail.Tests", "Mail.Tests\Mail.Tests.csproj", "{99ACCF58-7A61-4E85-A087-7512826D7AC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

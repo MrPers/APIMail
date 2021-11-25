@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using Mail.Contracts.Repo;
+﻿using Mail.Contracts.Repo;
 using Mail.Contracts.Services;
 using Mail.DTO.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Mail.Services
+namespace Mail.Business.Services
 {
     public class GroupService : IGroupService
     {
@@ -29,13 +28,13 @@ namespace Mail.Services
             await _groupRepository.Add(group);
         }
 
-        public async Task<List<GroupDto>> GetAll()
+        public async Task<ICollection<GroupDto>> GetAll()
         {
             var groups = await _groupRepository.GetAll();
+            
             foreach (var item in groups)
             {
                 item.UsersId = await _userRepository.FindAllUsersOnGroup(item.Id);
-
             }
 
             return groups;

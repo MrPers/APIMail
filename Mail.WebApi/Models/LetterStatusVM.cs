@@ -8,11 +8,12 @@ namespace Mail.WebApi.Models
 {
     public class LetterStatusVM
     {
-        [Required] 
-        public DateTime DepartureDate { get; set; }
+        [Required]
+        public long Id { get; set; }
+        public long LetterId { get; set; }
+        public long UserId { get; set; }
         [Required]
         public bool Status { get; set; }
-        [Required] 
-        public long UserId { get; set; }
+        public DateTime DepartureDate { get; set; }
     }
 }

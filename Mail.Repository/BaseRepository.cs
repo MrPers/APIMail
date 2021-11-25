@@ -5,8 +5,6 @@ using Mail.DB;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mail.Repository
@@ -20,38 +18,78 @@ namespace Mail.Repository
             _context = context;
             _mapper = mapper;
         }
-
-        public async Task<TId> Add(TDto Dto, bool status = true)
+        public async Task<TId> Add(TDto Dto)
         {
-            var time = _mapper.Map<TTable>(Dto);
-            await _context.Set<TTable>().AddAsync(time);
-
-            if (status)
+            if (Dto == null)
             {
-                await _context.SaveChangesAsync();
+                throw new ArgumentNullException(nameof(Dto));
             }
+
+            var time = _mapper.Map<TTable>(Dto);
+
+            if (time == null)
+            {
+                throw new ArgumentNullException(nameof(time));
+            }
+
+            await _context.Set<TTable>().AddAsync(time);
+            
+            await _context.SaveChangesAsync();
+
             return time.Id;
         }
 
-        public async Task Update(TId Id, TDto meaning, bool status = true)
+        public async Task<TId> Add(IEnumerable<TDto> Dto)
         {
-            var result = _context.Set<TTable>().Find(Id);
-            if (result != null)
+            if (Dto == null)
             {
-                _context.Entry(result).CurrentValues.SetValues(_mapper.Map<TTable>(meaning));
-                
-                if (status)
-                {
-                    await _context.SaveChangesAsync();
-                }
+                throw new ArgumentNullException(nameof(Dto));
             }
 
+            var time = _mapper.Map< ICollection<TTable>>(Dto);
+
+            if (time == null)
+            {
+                throw new ArgumentNullException(nameof(time));
+            }
+
+            await _context.Set<TTable>().AddRangeAsync(time);
+
+            await _context.SaveChangesAsync();
+
+            return (time as List<TTable>)[0].Id;
+        }
+
+        public async Task Update(TId Id, TDto meaning)
+        {
+            if(meaning == null)
+            {
+                throw new ArgumentNullException(nameof(meaning));
+            }
+
+            var result = _context.Set<TTable>().Find(Id);
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            _context.Entry(result)
+                .CurrentValues
+                .SetValues(_mapper.Map<TTable>(meaning));
+
+                await _context.SaveChangesAsync();
         }
 
         public async Task Delete(TId Id)
         {
-            _context.Entry<TTable>(_context.Set<TTable>().Find(Id)).State = EntityState.Deleted;
-            await _context.SaveChangesAsync();
+            var obj = _context.Set<TTable>().Find(Id);
+            if (obj != null)
+            {
+            _context.Entry<TTable>(obj).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+            }
+        
         }
 
         public async Task<List<TDto>> GetAll()

@@ -15,6 +15,6 @@ namespace Mail.DB.Models
         [MaxLength(50)]
         [Required]
         public string Name { get; set; }
-        public List<User> Users { get; set; } = new List<User>();
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }

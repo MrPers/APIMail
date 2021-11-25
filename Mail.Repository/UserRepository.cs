@@ -5,7 +5,6 @@ using Mail.DB.Models;
 using Mail.DTO.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,7 +46,12 @@ namespace Mail.Repository
                 .Include(p => p.Groups)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
-                f.Groups.Add(
+            if (f == null)
+            {
+                throw new ArgumentException(nameof(f));
+            }
+
+            f.Groups.Add(
                     _context.Groups
                     .FirstOrDefault(p => p.Id == groupId)
                 );
@@ -68,7 +72,13 @@ namespace Mail.Repository
             var f = await _context.Users
                 .Include(p => p.Groups)
                 .FirstOrDefaultAsync(p => p.Id == userId);
-                f.Groups.Remove(
+
+            if (f == null)
+            {
+                throw new ArgumentException(nameof(f));
+            }
+
+            f.Groups.Remove(
                     _context.Groups
                     .FirstOrDefault(p => p.Id == groupId)
                 );

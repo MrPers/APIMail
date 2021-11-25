@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Mail.DB\Mail.DB.csproj" />
     <ProjectReference Include="..\Mail.DTO\Mail.DTO.csproj" />
     <ProjectReference Include="..\Mail.Repository\Mail.Repository.csproj" />
-    <ProjectReference Include="..\Mail.Services\Mail.Services.csproj" />
+    <ProjectReference Include="..\Mail.Services\Mail.Business.csproj" />
   </ItemGroup>
 
 </Project>

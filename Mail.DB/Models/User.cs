@@ -22,8 +22,12 @@ namespace Mail.DB.Models
         [Required]
         [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}")]
         public string Email { get; set; }
-        public List<Group> Groups { get; set; } = new List<Group>();
-        public List<LetterStatus> Dispatchs { get; set; } = new List<LetterStatus>();
+        public ICollection<Group> Groups { get; set; } = new List<Group>();
+        public ICollection<LetterUser> LetterUsers { get; set; } = new List<LetterUser>();
+        //public User()
+        //{
+        //    LetterUsers = new List<LetterUser>();
+        //}
     }
 }
 
