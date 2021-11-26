@@ -1,66 +1,53 @@
-﻿using Mail.Business.Logics;
-using Mail.Contracts.Logics;
+﻿using Mail.Contracts.Logics;
 using Mail.Contracts.Repo;
 using Mail.Contracts.Services;
 using Mail.DTO.Models;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
 
 namespace Mail.Business.Services
 {
     public class LetterService : ILetterService
     {
-        private int keyWithPercentDispatchExecution;
+        private IOptions<MySettingsModel> _appSettings;
         private ILetterRepository _letterRepository;
         private ILetterStatusRepository _letterStatusRepository;
-        private IMemoryCache _cache;
-        private IConfiguration _configuration;
         private ILogger<LetterService> _logger;
         private ILetterLogics _letterLogics;
+        private ICacheLogics _cacheLogics;
 
         public LetterService(
-            IMemoryCache cache,
+            IOptions<MySettingsModel> appSettings,
             ILetterStatusRepository letterStatusRepository,
             ILetterRepository dispatchRepository,
             ILogger<LetterService> logger,
             ILetterLogics letterLogics,
-            IConfiguration configuration = null
-            )
+            ICacheLogics cacheLogics
+        )
         {
+            _cacheLogics = cacheLogics;
+            _appSettings = appSettings;
             _letterStatusRepository = letterStatusRepository;
-            _cache = cache;
             _letterRepository = dispatchRepository;
-            _configuration = configuration;
             _logger = logger;
             _letterLogics = letterLogics;
-            keyWithPercentDispatchExecution = Convert.ToInt32(_configuration["MailConnection:keyWithPercentDispatchExecution"]);
-            //keyWithPercentDispatchExecution = 1;
         }
 
-        public int Status()
+        public long TakesFromCachePercentageCompletion()
         {
-            int result = 0;
+            long percentageСompletion = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithPercentDispatchExecution);
 
-            if (_cache.TryGetValue(keyWithPercentDispatchExecution, out int percentageСompletion))
-            {
-                result = percentageСompletion;
-            }
-
-            return result;
+            return percentageСompletion;
         }
 
         public async Task SendLetter(string textBody, string textSubject, ICollection<long> usersId)
         {
-            if (usersId == null)
-            {
-                throw new ArgumentNullException(nameof(usersId));
-            }
             if (usersId.Count < 1)
             {
                 throw new ArgumentException(nameof(usersId));
@@ -69,32 +56,32 @@ namespace Mail.Business.Services
             try
             {
                 MailMessage message;
-                ICollection<LetterStatusDto> lettersStatusFiltre;
 
-                await _letterLogics.SavingRecordCreatingLetter(textBody, textSubject, usersId);
+                ICollection<LetterStatusDto> lettersStatus;
+
+                _cacheLogics.CleanCache();
+
+                await _letterLogics.SaveLetter(textBody, textSubject, usersId); // rename
 
                 SmtpClient client = _letterLogics.CreationClint();
 
-                var lettersStatus = await _letterStatusRepository.UnsentLetters();
+                var unsentsLettersStatus = await _letterStatusRepository.UnsentLetters();
 
-                var letters = lettersStatus.Select(x => x.LetterId).Distinct();
+                var shapeLettersId = unsentsLettersStatus.Select(x => x.LetterId).Distinct();
 
-                int lettersCount = lettersStatus.Count();
+                _cacheLogics.SaveValueInCache(unsentsLettersStatus);
 
-                int percentageCompletion = 0;
-
-                foreach (var item in letters)
+                foreach (var item in shapeLettersId)
                 {
-                    message = await _letterLogics.CreationMessage(item);
-                    lettersStatusFiltre = lettersStatus.Where(x => x.LetterId == item).ToList();
+                    message = await _letterLogics.CreatMessage(item);
 
-                    percentageCompletion = await _letterLogics.SendingLetters(
-                        lettersStatusFiltre,
+                    lettersStatus = unsentsLettersStatus.Where(x => x.LetterId == item).ToList();
+
+                    await _letterLogics.SendLetters(
+                        lettersStatus,
                         message,
-                        client,
-                        lettersCount,
-                        percentageCompletion
-                        );;
+                        client
+                        );
                 }
             }
             catch (Exception e)
@@ -103,25 +90,15 @@ namespace Mail.Business.Services
             }
         }
 
-        public async Task<ICollection<LetterStatusDto>> StatusLetterByUserId(long id)
+        public async Task<ICollection<LetterStatusDto>> StatusLetterByUserId([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
-            }
-
             var result = await _letterStatusRepository.FindAllById(id);
 
             return result;
         }
 
-        public async Task<LetterDto> GetById(long id)
+        public async Task<LetterDto> GetById([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
-            }
-
             var result = await _letterRepository.GetById(id);
 
             return result;

@@ -6,6 +6,7 @@ using Mail.DTO.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,15 +27,10 @@ namespace Mail.Repository
             return _mapper.Map<ICollection<LetterStatusDto>>(time);
         }
 
-        public async Task<ICollection<LetterStatusDto>> FindAllById(long Id)
+        public async Task<ICollection<LetterStatusDto>> FindAllById([Range(1, long.MaxValue)] long UserId)
         {
-            if (Id < 1)
-            {
-                throw new ArgumentException(nameof(Id));
-            }
-
             var result = await _context.Set<LetterUser>()
-                .Where(p => p.UserId == Id)
+                .Where(p => p.UserId == UserId)
                 .ToListAsync();
 
             return _mapper.Map<List<LetterStatusDto>>(result);

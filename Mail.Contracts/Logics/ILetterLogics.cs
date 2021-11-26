@@ -10,9 +10,9 @@ namespace Mail.Contracts.Logics
 {
     public interface ILetterLogics
     {
-        Task<int> SendingLetters(ICollection<LetterStatusDto> dispatchDtos, MailMessage message, SmtpClient client, int lettersCount, int percentageCompletion);
+        Task SendLetters(ICollection<LetterStatusDto> dispatchDtos, MailMessage message, SmtpClient client);
         SmtpClient CreationClint();
-        Task SavingRecordCreatingLetter(string textBody, string textSubject, ICollection<long> usersId);
-        Task<MailMessage> CreationMessage(long letterId);
+        Task SaveLetter(string textBody, string textSubject, ICollection<long> usersId);
+        Task<MailMessage> CreatMessage(long letterId);
     }
 }

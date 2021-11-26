@@ -33,7 +33,7 @@ namespace Mail.Repository
             }
 
             await _context.Set<TTable>().AddAsync(time);
-            
+
             await _context.SaveChangesAsync();
 
             return time.Id;
@@ -46,7 +46,7 @@ namespace Mail.Repository
                 throw new ArgumentNullException(nameof(Dto));
             }
 
-            var time = _mapper.Map< ICollection<TTable>>(Dto);
+            var time = _mapper.Map<ICollection<TTable>>(Dto);
 
             if (time == null)
             {
@@ -62,7 +62,7 @@ namespace Mail.Repository
 
         public async Task Update(TId Id, TDto meaning)
         {
-            if(meaning == null)
+            if (meaning == null)
             {
                 throw new ArgumentNullException(nameof(meaning));
             }
@@ -78,7 +78,7 @@ namespace Mail.Repository
                 .CurrentValues
                 .SetValues(_mapper.Map<TTable>(meaning));
 
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(TId Id)
@@ -86,13 +86,13 @@ namespace Mail.Repository
             var obj = _context.Set<TTable>().Find(Id);
             if (obj != null)
             {
-            _context.Entry<TTable>(obj).State = EntityState.Deleted;
-                    await _context.SaveChangesAsync();
+                _context.Entry<TTable>(obj).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
             }
-        
+
         }
 
-        public async Task<List<TDto>> GetAll()
+        public async Task<ICollection<TDto>> GetAll()
         {
             var dbItems = await _context.Set<TTable>().ToListAsync();
             return _mapper.Map<List<TDto>>(dbItems);
@@ -103,7 +103,7 @@ namespace Mail.Repository
             var dbItem = await _context.Set<TTable>().FindAsync(Id);
             return _mapper.Map<TDto>(dbItem);
         }
-        
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

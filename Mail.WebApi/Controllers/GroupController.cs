@@ -5,6 +5,7 @@ using Mail.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Mail.WebApi.Controllers
@@ -33,6 +34,7 @@ namespace Mail.WebApi.Controllers
         public async Task<IActionResult> GetGroupAll()
         {
             var groups = await _groupService.GetAll();
+
             IActionResult result = groups == null ? NotFound() : Ok(_mapper.Map<List<GroupVM>>(groups));
 
             return result;
@@ -47,9 +49,9 @@ namespace Mail.WebApi.Controllers
         }
 
         [HttpDelete("delete-group/{Id}")]
-        public async Task<IActionResult> DeleteGroup(long Id)
+        public async Task<IActionResult> DeleteGroup([Range(1, long.MaxValue)] long Id)
         {
-            if (Id < 1)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }

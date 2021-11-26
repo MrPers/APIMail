@@ -3,6 +3,7 @@ using Mail.Contracts.Services;
 using Mail.DTO.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Mail.Business.Services
@@ -40,25 +41,16 @@ namespace Mail.Business.Services
             return groups;
         }
 
-        public async Task Delete(long id)
+        public async Task Delete([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
-            }
-
             await _groupRepository.Delete(id);
         }
 
-        public async Task Update(long id, GroupDto group)
+        public async Task Update([Range(1, long.MaxValue)] long id, GroupDto group)
         {
             if (group == null)
             {
                 throw new ArgumentNullException(nameof(group));
-            }
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
             }
 
             await _groupRepository.Update(id, group);

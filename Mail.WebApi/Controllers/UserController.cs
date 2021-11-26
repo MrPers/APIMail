@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Mail.WebApi.Controllers
         private ILogger<UserController> _logger;
 
         public UserController(
-            IUserService userService,  
+            IUserService userService,
             ILogger<UserController> logger,
             IMapper mapper
         )
@@ -33,16 +34,16 @@ namespace Mail.WebApi.Controllers
         }
 
         [HttpDelete("delete-user/{Id}")]
-        public async Task<IActionResult> DeleteUser(long Id)
+        public async Task<IActionResult> DeleteUser([Range(1, long.MaxValue)] long Id)
         {
-            if (Id < 1)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            
+
             await _userService.Delete(Id);
 
-            return Ok();
+            return Ok(true);
         }
 
         [HttpGet("get-users-all")]
@@ -58,32 +59,32 @@ namespace Mail.WebApi.Controllers
         public async Task<IActionResult> RegisterUser([FromForm] UserVM user)
         {
             await _userService.RegisterAsync(_mapper.Map<UserDto>(user));
-            
-            return Ok();            
+
+            return Ok(true);
         }
 
         [HttpPost("update-user")]
         public async Task<IActionResult> UpdateUser([FromForm] UserVM user)
         {
             await _userService.Update(user.Id, _mapper.Map<UserDto>(user));
-            
-            return Ok();
+
+            return Ok(true);
         }
 
         [HttpPost("delete-user-group")]
         public async Task<IActionResult> DeleteUserGroup(GroupUserReplyUI statusUserGroup)
         {
-            await _userService.DeleteWithGroups(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
-            
-            return Ok();
+            await _userService.DeleteFromGroup(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
+
+            return Ok(true);
         }
 
         [HttpPost("add-user-group")]
         public async Task<IActionResult> AddUserGroup(GroupUserReplyUI statusUserGroup)
         {
-            await _userService.AddInGroups(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
-            
-            return Ok();
+            await _userService.AddInGroup(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
+
+            return Ok(true);
         }
 
     }

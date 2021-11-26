@@ -1,11 +1,7 @@
-﻿using Mail.DTO.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mail.DB.Models
 {
@@ -24,10 +20,5 @@ namespace Mail.DB.Models
         public string Email { get; set; }
         public ICollection<Group> Groups { get; set; } = new List<Group>();
         public ICollection<LetterUser> LetterUsers { get; set; } = new List<LetterUser>();
-        //public User()
-        //{
-        //    LetterUsers = new List<LetterUser>();
-        //}
     }
 }
-

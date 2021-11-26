@@ -4,8 +4,10 @@ using Mail.DTO.Models;
 using Mail.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,16 +43,16 @@ namespace Mail.WebApi.Controllers
 
         [HttpGet("status-letter")]
         public IActionResult statusLetter()
-        {            
-            var result = _letterService.Status();
+        {
+            var result = _letterService.TakesFromCachePercentageCompletion();
 
             return Ok(result);
         }
 
         [HttpGet("get-history-lette/{id}")]
-        public async Task<IActionResult> StatusLetterByUserId(long id)
+        public async Task<IActionResult> StatusLetterByUserId([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -63,9 +65,9 @@ namespace Mail.WebApi.Controllers
         }
 
         [HttpGet("get-lette/{id}")]
-        public async Task<IActionResult> LetterByHistoryLetteId(long id)
+        public async Task<IActionResult> LetterByHistoryLetteId([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }

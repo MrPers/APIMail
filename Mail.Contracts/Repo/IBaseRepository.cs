@@ -8,7 +8,7 @@ namespace Mail.Contracts.Repo
 {
     public interface IBaseRepository<TTable, TDto, TId> where TTable : IBaseEntity<TId>
     {
-        Task<List<TDto>> GetAll();
+        Task<ICollection<TDto>> GetAll();
         Task<TDto> GetById(TId Id);
         Task<TId> Add(IEnumerable<TDto> Dto);
         Task<TId> Add(TDto Dto);

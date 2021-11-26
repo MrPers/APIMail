@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Mail.Business.Services;
 using Mail.Business.Logics;
 using Mail.Contracts.Logics;
+using Mail.DTO.Models;
 
 namespace Mail.WebApi
 {
@@ -27,6 +28,9 @@ namespace Mail.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //зарегистрируем наш класс
+            services.Configure<MySettingsModel>(Configuration.GetSection("MailConnection"));
+
             //логирование БД
             services.AddLogging(loggingBuilder =>
             {
@@ -50,6 +54,7 @@ namespace Mail.WebApi
             services.AddScoped<IGroupService, GroupService>();
 
             services.AddScoped(typeof(ILetterLogics), typeof(LetterLogics));
+            services.AddScoped(typeof(ICacheLogics), typeof(CacheLogics));
 
             services.AddCors();
             services.AddControllers();

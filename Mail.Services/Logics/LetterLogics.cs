@@ -1,47 +1,41 @@
 ﻿using Mail.Contracts.Logics;
 using Mail.Contracts.Repo;
 using Mail.DTO.Models;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mail.Business.Logics
 {
     public class LetterLogics : ILetterLogics
     {
-        private readonly int keyWithPercentDispatchExecution;
+        private IOptions<MySettingsModel> _appSettings;
         private ILetterRepository _letterRepository;
         private ILetterStatusRepository _letterStatusRepository;
         private IUserRepository _userRepository;
-        private IMemoryCache _cache;
-        private IConfiguration _configuration;
+        private ICacheLogics _cacheLogics;
 
         public LetterLogics(
+            ICacheLogics cacheLogics,
             ILetterStatusRepository letterStatusRepository,
-            IMemoryCache cache,
             ILetterRepository dispatchRepository,
             IUserRepository userRepository,
-            IConfiguration configuration = null
+            IOptions<MySettingsModel> appSettings
         )
         {
-            _cache = cache;
+            _cacheLogics = cacheLogics;
+            _appSettings = appSettings;
             _letterStatusRepository = letterStatusRepository;
             _userRepository = userRepository;
             _letterRepository = dispatchRepository;
-            _configuration = configuration;
-            keyWithPercentDispatchExecution = Convert.ToInt32(_configuration["MailConnection:keyWithPercentDispatchExecution"]);
         }
 
-        public async Task SavingRecordCreatingLetter(string textBody, string textSubject, ICollection<long> usersId)
+        public async Task SaveLetter(string textBody, string textSubject, ICollection<long> usersId)
         {
-            _cache.Remove(keyWithPercentDispatchExecution);
-
             var Letter = new LetterDto()
             {
                 TextBody = textBody,
@@ -64,59 +58,66 @@ namespace Mail.Business.Logics
 
         public SmtpClient CreationClint()
         {
-            SmtpClient client = new SmtpClient(Convert.ToString(_configuration["MailConnection:smtpClien"]));
-            client.Credentials = new NetworkCredential(
-                Convert.ToString(_configuration["MailConnection:address"]),
-                Convert.ToString(_configuration["MailConnection:pasword"])
-                );
-            client.Port = Convert.ToInt32(_configuration["MailConnection:port"]);
+            SmtpClient client = new SmtpClient(_appSettings.Value.SmtpClien);
+            client.Credentials = new NetworkCredential(_appSettings.Value.Address,_appSettings.Value.Pasword);
+            client.Port = Convert.ToInt32(_appSettings.Value.Port);
             client.EnableSsl = true;
             return client;
         }
 
-        public async Task<MailMessage> CreationMessage(long letterId)
+        public async Task<MailMessage> CreatMessage(long letterId)
         {
-            var letter = await _letterRepository.GetById(letterId);
+            LetterDto letter = await _letterRepository.GetById(letterId);
 
             MailMessage message = new MailMessage();
             message.IsBodyHtml = true;
-            message.From = new MailAddress(Convert.ToString(_configuration["MailConnection:address"]), Convert.ToString(_configuration["MailConnection:name"]));
+            message.From = new MailAddress(_appSettings.Value.Address, _appSettings.Value.Name);
             message.Subject = letter.TextSubject;
             message.Body = letter.TextBody;
             return message;
         }
-        
-        public async Task<int> SendingLetters(ICollection<LetterStatusDto> lettersStatus, MailMessage message, SmtpClient client, int lettersCount, int percentageCompletion)
+
+        public async Task SendLetters(ICollection<LetterStatusDto> lettersStatus, MailMessage message, SmtpClient client)
         {
-            int timeSpanFromSeconds = 6;
             Random rand = new Random();
+            
+            var lettersCount = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithWholeDispatchExecution); //rename, rename
+
+            var percentageCompletion = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithPercentageCompletion); // rename
 
             foreach (var item in lettersStatus)
             {
-                var user = await _userRepository.GetById(item.UserId);
+                await SendLetter(message, client, item);
 
-                message.To.Add(user.Email);
+                await ChangSetatusLetterInDatabase(item);
 
-                client.Send(message);
-
-                if (lettersStatus.Count > 1)
+                if (lettersCount > 1)
                 {
-                    _cache.Set(keyWithPercentDispatchExecution,
-                        100 * ++percentageCompletion / lettersStatus.Count, new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(timeSpanFromSeconds)
-                        });
+                    _cacheLogics.SetsKeyValueInCache(_appSettings.Value.KeyWithPercentDispatchExecution, 100 * ++percentageCompletion / lettersCount);
 
-                    System.Threading.Thread.Sleep(rand.Next(1, 3) * 1000);
+                    System.Threading.Thread.Sleep(rand.Next(1, 3) * 100);
                 }
-
-                item.Status = true;
-                item.DepartureDate = DateTime.Now;
-
-                await _letterStatusRepository.Update(item.Id, item);
             }
 
-            return percentageCompletion;
+            _cacheLogics.SetsKeyValueInCache(_appSettings.Value.KeyWithPercentageCompletion, percentageCompletion);
         }
+
+        private async Task ChangSetatusLetterInDatabase(LetterStatusDto item)
+        {
+            item.Status = true;
+            item.DepartureDate = DateTime.Now;
+
+            await _letterStatusRepository.Update(item.Id, item);
+        }
+
+        private async Task SendLetter(MailMessage message, SmtpClient client, LetterStatusDto item)
+        {
+            UserDto user = await _userRepository.GetById(item.UserId);
+
+            message.To.Add(user.Email);
+
+            client.Send(message);
+        }
+
     }
 }

@@ -5,6 +5,8 @@ using Mail.DB.Models;
 using Mail.DTO.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,74 +16,52 @@ namespace Mail.Repository
     {
         public UserRepository(DataContext context, IMapper mapper) : base(context, mapper)
         {
+
         }
 
-        public async Task<long[]> FindAllUsersOnGroup(long groupId)
+        public async Task<ICollection<long>> FindAllUsersOnGroup([Range(1, long.MaxValue)] long groupId)
         {
-            if (groupId < 1)
-            {
-                throw new ArgumentException(nameof(groupId));
-            }
-
             var usersId = await _context.Users
-               .Where(p=>p.Groups.Any(y=>y.Id==groupId))
+               .Where(p => p.Groups.Any(y => y.Id == groupId))
                .Select(p => p.Id)
-               .ToArrayAsync();
+               .ToListAsync();
 
             return usersId;
         }
 
-        public async Task AddInGroups(long groupId, long userId)
+        public async Task AddInGroups([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
         {
-            if (groupId < 1)
-            {
-                throw new ArgumentException(nameof(groupId));
-            }
-            if (userId < 1)
-            {
-                throw new ArgumentException(nameof(userId));
-            }
-
-            var f = await _context.Users
+            var user = await _context.Users
                 .Include(p => p.Groups)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
-            if (f == null)
+            if (user == null)
             {
-                throw new ArgumentException(nameof(f));
+                throw new ArgumentException(nameof(user));
             }
 
-            f.Groups.Add(
-                    _context.Groups
-                    .FirstOrDefault(p => p.Id == groupId)
-                );
+            user.Groups.Add(
+                _context.Groups
+                .FirstOrDefault(p => p.Id == groupId)
+            );
 
         }
 
-        public async Task DeleteWithGroups(long groupId, long userId)
+        public async Task DeleteWithGroups([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
         {
-            if (groupId < 1)
-            {
-                throw new ArgumentException(nameof(groupId));
-            }
-            if (userId < 1)
-            {
-                throw new ArgumentException(nameof(userId));
-            }
-
-            var f = await _context.Users
+            var user = await _context.Users
                 .Include(p => p.Groups)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
-            if (f == null)
+            if (user == null)
             {
-                throw new ArgumentException(nameof(f));
+                throw new ArgumentException(nameof(user));
             }
 
-            f.Groups.Remove(
-                    _context.Groups
-                    .FirstOrDefault(p => p.Id == groupId)
-                );
+            user.Groups.Remove(
+                _context.Groups
+                .FirstOrDefault(p => p.Id == groupId)
+            );
 
         }
     }

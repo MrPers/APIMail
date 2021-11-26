@@ -3,6 +3,7 @@ using Mail.Contracts.Services;
 using Mail.DTO.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Mail.Business.Services
@@ -26,30 +27,21 @@ namespace Mail.Business.Services
             await _userRepository.Add(user);
         }
 
-        public async Task<List<UserDto>> GetAll()
+        public async Task<ICollection<UserDto>> GetAll()
         {
             var users = await _userRepository.GetAll();
 
             return users;
         }
 
-        public async Task Delete(long id)
+        public async Task Delete([Range(1, long.MaxValue)] long id)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
-            }
 
             await _userRepository.Delete(id);
         }
 
-        public async Task Update(long id, UserDto user)
+        public async Task Update([Range(1, long.MaxValue)] long id, UserDto user)
         {
-            if (id < 1)
-            {
-                throw new ArgumentException(nameof(id));
-            }
-
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -58,51 +50,34 @@ namespace Mail.Business.Services
             await _userRepository.Update(id, user);
         }
 
-        public async Task AddInGroups(long IdGroup, long[] IdUsers)
+        public async Task AddInGroup([Range(1, long.MaxValue)] long IdGroup, ICollection<long> IdUsers) // rename
         {
-            if (IdGroup < 1)
-            {
-                throw new ArgumentException(nameof(IdGroup));
-            }
-
-            if (IdUsers.Length == 0)
+            if (IdUsers.Count == 0)
             {
                 throw new ArgumentException(nameof(IdUsers));
             }
 
-            for (int i = 0; i < IdUsers.Length; i++)
+            foreach (var item in IdUsers)
             {
-                if (IdUsers[i] < 1)
-                {
-                    throw new ArgumentException(nameof(IdUsers));
-                }
+              
 
-                await _userRepository.AddInGroups(IdGroup, IdUsers[i]);
+                await _userRepository.AddInGroups(IdGroup, item);
             }
 
             await _userRepository.SaveChanges();
         }
 
-        public async Task DeleteWithGroups(long IdGroup, long[] IdUsers)
+        public async Task DeleteFromGroup([Range(1, long.MaxValue)]  long IdGroup, ICollection<long> IdUsers) // rename
         {
-            if (IdGroup < 1)
-            {
-                throw new ArgumentException(nameof(IdGroup));
-            }
-
-            if (IdUsers.Length == 0)
+            if (IdUsers.Count == 0)
             {
                 throw new ArgumentException(nameof(IdUsers));
             }
 
-            for (int i = 0; i < IdUsers.Length; i++)
+            foreach (var item in IdUsers)
             {
-                if (IdUsers[i] < 1)
-                {
-                    throw new ArgumentException(nameof(IdUsers));
-                }
 
-                await _userRepository.DeleteWithGroups(IdGroup, IdUsers[i]);
+                await _userRepository.DeleteWithGroups(IdGroup, item);
             }
 
             await _userRepository.SaveChanges();

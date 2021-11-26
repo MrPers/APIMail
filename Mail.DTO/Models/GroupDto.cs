@@ -11,6 +11,6 @@ namespace Mail.DTO.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public long[] UsersId { get; set; }
+        public ICollection<long> UsersId { get; set; }
     }
 }
