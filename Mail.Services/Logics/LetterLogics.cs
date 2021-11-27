@@ -58,8 +58,8 @@ namespace Mail.Business.Logics
 
         public SmtpClient CreationClint()
         {
-            SmtpClient client = new SmtpClient(_appSettings.Value.SmtpClien);
-            client.Credentials = new NetworkCredential(_appSettings.Value.Address,_appSettings.Value.Pasword);
+            SmtpClient client = new SmtpClient(_appSettings.Value.SmtpClient);
+            client.Credentials = new NetworkCredential(_appSettings.Value.Address,_appSettings.Value.Password);
             client.Port = Convert.ToInt32(_appSettings.Value.Port);
             client.EnableSsl = true;
             return client;
