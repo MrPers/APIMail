@@ -18,7 +18,7 @@ namespace Mail.Repository
         {
         }
 
-        public async Task<ICollection<LetterStatusDto>> UnsentLetters()
+        public async Task<ICollection<LetterStatusDto>> GetLettersStrtusUnsentLettersAsync()
         {
             var time = await _context.Set<LetterUser>()
                 .Where(x => x.Status == false)
@@ -27,7 +27,7 @@ namespace Mail.Repository
             return _mapper.Map<ICollection<LetterStatusDto>>(time);
         }
 
-        public async Task<ICollection<LetterStatusDto>> FindAllById([Range(1, long.MaxValue)] long UserId)
+        public async Task<ICollection<LetterStatusDto>> GetLettersStatusFindAllByIdUserIdASync([Range(1, long.MaxValue)] long UserId)
         {
             var result = await _context.Set<LetterUser>()
                 .Where(p => p.UserId == UserId)

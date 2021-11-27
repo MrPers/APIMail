@@ -6,9 +6,9 @@ namespace Mail.Contracts.Services
 {
     public interface ILetterService
     {
-        Task SendLetter(string textBody, string textSubject, ICollection<long> users);
-        long TakesFromCachePercentageCompletion();
-        Task<ICollection<LetterStatusDto>> StatusLetterByUserId(long id);
-        Task<LetterDto> GetById(long id);
+        Task SendLetterAsync(string textBody, string textSubject, ICollection<long> users);
+        long TakesPercentageCompletion();
+        Task<ICollection<LetterStatusDto>> StatusLetterByUserIdAsync(long id);
+        Task<LetterDto> GetByIdAsync(long id);
     }
 }

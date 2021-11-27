@@ -10,8 +10,8 @@ namespace Mail.Contracts.Repo
 {
     public interface IUserRepository : IBaseRepository<User, UserDto, long>
     {
-        Task<ICollection<long>> FindAllUsersOnGroup(long groupId);
-        Task AddInGroups(long groupId, long userId);
-        Task DeleteWithGroups(long groupId, long userId);
+        Task<ICollection<long>> GetUsersIdOnGroupAsync(long groupId);
+        Task SubscriptionToGroupsAsync(long groupId, long userId);
+        Task UnsubscriptionToGroupsAsync(long groupId, long userId);
     }
 }

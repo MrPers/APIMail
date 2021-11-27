@@ -41,7 +41,7 @@ namespace Mail.WebApi.Controllers
                 return BadRequest();
             }
 
-            await _userService.Delete(Id);
+            await _userService.DeleteAsync(Id);
 
             return Ok(true);
         }
@@ -49,7 +49,7 @@ namespace Mail.WebApi.Controllers
         [HttpGet("get-users-all")]
         public async Task<IActionResult> GetUsersAll()
         {
-            var users = await _userService.GetAll();
+            var users = await _userService.GetAllAsync();
             IActionResult result = users == null ? NotFound() : Ok(_mapper.Map<List<UserVM>>(users));
 
             return result;
@@ -66,7 +66,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("update-user")]
         public async Task<IActionResult> UpdateUser([FromForm] UserVM user)
         {
-            await _userService.Update(user.Id, _mapper.Map<UserDto>(user));
+            await _userService.UpdateAsync(user.Id, _mapper.Map<UserDto>(user));
 
             return Ok(true);
         }
@@ -74,7 +74,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("delete-user-group")]
         public async Task<IActionResult> DeleteUserGroup(GroupUserReplyUI statusUserGroup)
         {
-            await _userService.DeleteFromGroup(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
+            await _userService.UnsubscriptionToGroupsAsync(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
 
             return Ok(true);
         }
@@ -82,7 +82,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("add-user-group")]
         public async Task<IActionResult> AddUserGroup(GroupUserReplyUI statusUserGroup)
         {
-            await _userService.AddInGroup(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
+            await _userService.SubscriptionToGroupsAsync(statusUserGroup.IdGroup, statusUserGroup.IdUsers);
 
             return Ok(true);
         }

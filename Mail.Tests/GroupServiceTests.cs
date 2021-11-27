@@ -40,27 +40,27 @@ namespace Mail.Tests
                 new GroupDto() { Id = 2, Name = "Name2" }
             };
             
-            mGroupRepository.Setup(ld => ld.GetAll()).ReturnsAsync(time);
+            mGroupRepository.Setup(ld => ld.GetAllAsync()).ReturnsAsync(time);
 
-            CollectionAssert.AreEqual(time, await groupService.GetAll());
+            CollectionAssert.AreEqual(time, await groupService.GetAllAsync());
         }
 
         [Test]
         public void DeleteWithIdLessThan0ExpectException([Range(-2,0)] int id)
         {
-            Assert.Throws<ArgumentException>(() => groupService.Delete(id).GetAwaiter().GetResult());
+            Assert.Throws<ArgumentException>(() => groupService.DeleteAsync(id).GetAwaiter().GetResult());
         }
 
         [Test]
         public void UpdateWithNullGroupExpectException()
         {
-            Assert.Throws<ArgumentNullException>(() => groupService.Update(2, null).GetAwaiter().GetResult());
+            Assert.Throws<ArgumentNullException>(() => groupService.UpdateAsync(2, null).GetAwaiter().GetResult());
         }
 
         [Test]
         public void UpdateWithIdLessThan0ExpectException([Range(-2, 0)] int id)
         {
-            Assert.Throws<ArgumentException>(() => groupService.Update(id, new GroupDto()).GetAwaiter().GetResult());
+            Assert.Throws<ArgumentException>(() => groupService.UpdateAsync(id, new GroupDto()).GetAwaiter().GetResult());
         }
     }
 }

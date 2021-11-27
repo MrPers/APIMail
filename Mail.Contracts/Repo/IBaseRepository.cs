@@ -8,12 +8,12 @@ namespace Mail.Contracts.Repo
 {
     public interface IBaseRepository<TTable, TDto, TId> where TTable : IBaseEntity<TId>
     {
-        Task<ICollection<TDto>> GetAll();
-        Task<TDto> GetById(TId Id);
-        Task<TId> Add(IEnumerable<TDto> Dto);
-        Task<TId> Add(TDto Dto);
-        Task Update(TId Id, TDto meaning); 
-        Task Delete(TId Id);
-        Task SaveChanges();
+        Task<ICollection<TDto>> GetAllAsync();
+        Task<TDto> GetByIdAsync(TId Id);
+        Task<TId> GetIdAddAsync(IEnumerable<TDto> Dto);
+        Task<TId> GetIDAddAsync(TDto Dto);
+        Task UpdateAsync(TId Id, TDto meaning); 
+        Task DeleteAsync(TId Id);
+        Task SaveChangesAsync();
     }
 }

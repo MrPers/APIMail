@@ -34,7 +34,7 @@ namespace Mail.Business.Logics
             _letterRepository = dispatchRepository;
         }
 
-        public async Task SaveLetter(string textBody, string textSubject, ICollection<long> usersId)
+        public async Task SaveLetterAsync(string textBody, string textSubject, ICollection<long> usersId)
         {
             var Letter = new LetterDto()
             {
@@ -43,7 +43,7 @@ namespace Mail.Business.Logics
                 DepartureСreation = DateTime.Now,
             };
 
-            var letterId = await _letterRepository.Add(Letter);
+            var letterId = await _letterRepository.GetIDAddAsync(Letter);
 
             var RangeLetterStatus = usersId.Select(x => new LetterStatusDto()
             {
@@ -52,7 +52,7 @@ namespace Mail.Business.Logics
                 DepartureDate = DateTime.Now
             }).ToList();
 
-            await _letterStatusRepository.Add(RangeLetterStatus);
+            await _letterStatusRepository.GetIdAddAsync(RangeLetterStatus);
 
         }
 
@@ -65,9 +65,9 @@ namespace Mail.Business.Logics
             return client;
         }
 
-        public async Task<MailMessage> CreatMessage(long letterId)
+        public async Task<MailMessage> CreatMessageAsync(long letterId)
         {
-            LetterDto letter = await _letterRepository.GetById(letterId);
+            LetterDto letter = await _letterRepository.GetByIdAsync(letterId);
 
             MailMessage message = new MailMessage();
             message.IsBodyHtml = true;
@@ -77,17 +77,17 @@ namespace Mail.Business.Logics
             return message;
         }
 
-        public async Task SendLetters(ICollection<LetterStatusDto> lettersStatus, MailMessage message, SmtpClient client)
+        public async Task SendLettersAsync(ICollection<LetterStatusDto> lettersStatus, MailMessage message, SmtpClient client)
         {
             Random rand = new Random();
             
-            var lettersCount = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithWholeDispatchExecution); //rename, rename
+            var lettersCount = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithWholeDispatchExecution); 
 
-            var percentageCompletion = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithPercentageCompletion); // rename
+            var percentageCompletion = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithPercentageCompletion);
 
             foreach (var item in lettersStatus)
             {
-                await SendLetter(message, client, item);
+                await SendLetterAsync(message, client, item);
 
                 await ChangSetatusLetterInDatabase(item);
 
@@ -107,16 +107,18 @@ namespace Mail.Business.Logics
             item.Status = true;
             item.DepartureDate = DateTime.Now;
 
-            await _letterStatusRepository.Update(item.Id, item);
+            await _letterStatusRepository.UpdateAsync(item.Id, item);
         }
 
-        private async Task SendLetter(MailMessage message, SmtpClient client, LetterStatusDto item)
+        private async Task SendLetterAsync(MailMessage message, SmtpClient client, LetterStatusDto item)
         {
-            UserDto user = await _userRepository.GetById(item.UserId);
+            UserDto user = await _userRepository.GetByIdAsync(item.UserId);
 
             message.To.Add(user.Email);
 
             client.Send(message);
+
+            message.To.Clear();
         }
 
     }

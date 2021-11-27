@@ -19,7 +19,7 @@ namespace Mail.Repository
 
         }
 
-        public async Task<ICollection<long>> FindAllUsersOnGroup([Range(1, long.MaxValue)] long groupId)
+        public async Task<ICollection<long>> GetUsersIdOnGroupAsync([Range(1, long.MaxValue)] long groupId)
         {
             var usersId = await _context.Users
                .Where(p => p.Groups.Any(y => y.Id == groupId))
@@ -29,7 +29,7 @@ namespace Mail.Repository
             return usersId;
         }
 
-        public async Task AddInGroups([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
+        public async Task SubscriptionToGroupsAsync([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
         {
             var user = await _context.Users
                 .Include(p => p.Groups)
@@ -47,7 +47,7 @@ namespace Mail.Repository
 
         }
 
-        public async Task DeleteWithGroups([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
+        public async Task UnsubscriptionToGroupsAsync([Range(1, long.MaxValue)] long groupId, [Range(1, long.MaxValue)] long userId)
         {
             var user = await _context.Users
                 .Include(p => p.Groups)

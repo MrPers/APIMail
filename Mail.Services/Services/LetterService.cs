@@ -39,14 +39,14 @@ namespace Mail.Business.Services
             _letterLogics = letterLogics;
         }
 
-        public long TakesFromCachePercentageCompletion()
+        public long TakesPercentageCompletion()
         {
             long percentageСompletion = _cacheLogics.GetsKeyValueInCache(_appSettings.Value.KeyWithPercentDispatchExecution);
 
             return percentageСompletion;
         }
 
-        public async Task SendLetter(string textBody, string textSubject, ICollection<long> usersId)
+        public async Task SendLetterAsync(string textBody, string textSubject, ICollection<long> usersId)
         {
             if (usersId.Count < 1)
             {
@@ -61,11 +61,11 @@ namespace Mail.Business.Services
 
                 _cacheLogics.CleanCache();
 
-                await _letterLogics.SaveLetter(textBody, textSubject, usersId); // rename
+                await _letterLogics.SaveLetterAsync(textBody, textSubject, usersId);
 
                 SmtpClient client = _letterLogics.CreationClint();
 
-                var unsentsLettersStatus = await _letterStatusRepository.UnsentLetters();
+                var unsentsLettersStatus = await _letterStatusRepository.GetLettersStrtusUnsentLettersAsync();
 
                 var shapeLettersId = unsentsLettersStatus.Select(x => x.LetterId).Distinct();
 
@@ -73,11 +73,11 @@ namespace Mail.Business.Services
 
                 foreach (var item in shapeLettersId)
                 {
-                    message = await _letterLogics.CreatMessage(item);
+                    message = await _letterLogics.CreatMessageAsync(item);
 
                     lettersStatus = unsentsLettersStatus.Where(x => x.LetterId == item).ToList();
 
-                    await _letterLogics.SendLetters(
+                    await _letterLogics.SendLettersAsync(
                         lettersStatus,
                         message,
                         client
@@ -90,16 +90,16 @@ namespace Mail.Business.Services
             }
         }
 
-        public async Task<ICollection<LetterStatusDto>> StatusLetterByUserId([Range(1, long.MaxValue)] long id)
+        public async Task<ICollection<LetterStatusDto>> StatusLetterByUserIdAsync([Range(1, long.MaxValue)] long id)
         {
-            var result = await _letterStatusRepository.FindAllById(id);
+            var result = await _letterStatusRepository.GetLettersStatusFindAllByIdUserIdASync(id);
 
             return result;
         }
 
-        public async Task<LetterDto> GetById([Range(1, long.MaxValue)] long id)
+        public async Task<LetterDto> GetByIdAsync([Range(1, long.MaxValue)] long id)
         {
-            var result = await _letterRepository.GetById(id);
+            var result = await _letterRepository.GetByIdAsync(id);
 
             return result;
         }

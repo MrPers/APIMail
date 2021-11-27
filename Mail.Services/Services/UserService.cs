@@ -24,33 +24,33 @@ namespace Mail.Business.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
-            await _userRepository.Add(user);
+            await _userRepository.GetIDAddAsync(user);
         }
 
-        public async Task<ICollection<UserDto>> GetAll()
+        public async Task<ICollection<UserDto>> GetAllAsync()
         {
-            var users = await _userRepository.GetAll();
+            var users = await _userRepository.GetAllAsync();
 
             return users;
         }
 
-        public async Task Delete([Range(1, long.MaxValue)] long id)
+        public async Task DeleteAsync([Range(1, long.MaxValue)] long id)
         {
 
-            await _userRepository.Delete(id);
+            await _userRepository.DeleteAsync(id);
         }
 
-        public async Task Update([Range(1, long.MaxValue)] long id, UserDto user)
+        public async Task UpdateAsync([Range(1, long.MaxValue)] long id, UserDto user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            await _userRepository.Update(id, user);
+            await _userRepository.UpdateAsync(id, user);
         }
 
-        public async Task AddInGroup([Range(1, long.MaxValue)] long IdGroup, ICollection<long> IdUsers) // rename
+        public async Task SubscriptionToGroupsAsync([Range(1, long.MaxValue)] long IdGroup, ICollection<long> IdUsers) // rename
         {
             if (IdUsers.Count == 0)
             {
@@ -61,13 +61,13 @@ namespace Mail.Business.Services
             {
               
 
-                await _userRepository.AddInGroups(IdGroup, item);
+                await _userRepository.SubscriptionToGroupsAsync(IdGroup, item);
             }
 
-            await _userRepository.SaveChanges();
+            await _userRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteFromGroup([Range(1, long.MaxValue)]  long IdGroup, ICollection<long> IdUsers) // rename
+        public async Task UnsubscriptionToGroupsAsync([Range(1, long.MaxValue)]  long IdGroup, ICollection<long> IdUsers) // rename
         {
             if (IdUsers.Count == 0)
             {
@@ -77,10 +77,10 @@ namespace Mail.Business.Services
             foreach (var item in IdUsers)
             {
 
-                await _userRepository.DeleteWithGroups(IdGroup, item);
+                await _userRepository.UnsubscriptionToGroupsAsync(IdGroup, item);
             }
 
-            await _userRepository.SaveChanges();
+            await _userRepository.SaveChangesAsync();
         }
     }
 }

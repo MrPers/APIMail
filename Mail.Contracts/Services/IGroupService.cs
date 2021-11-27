@@ -10,8 +10,8 @@ namespace Mail.Contracts.Services
     public interface IGroupService
     {
         Task RegisterAsync(GroupDto group);
-        Task<ICollection<GroupDto>> GetAll();
-        Task Delete(long Id);
-        Task Update(long Id, GroupDto group);
+        Task<ICollection<GroupDto>> GetAllAsync();
+        Task DeleteAsync(long Id);
+        Task UpdateAsync(long Id, GroupDto group);
     }
 }

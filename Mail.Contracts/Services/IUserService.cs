@@ -7,10 +7,10 @@ namespace Mail.Contracts.Services
     public interface IUserService
     {
         Task RegisterAsync(UserDto user);
-        Task<ICollection<UserDto>> GetAll();
-        Task Update(long Id, UserDto user);
-        Task Delete(long Id);
-        Task AddInGroup(long IdGroup, ICollection<long> IdUsers);
-        Task DeleteFromGroup(long IdGroup, ICollection<long> IdUsers);
+        Task<ICollection<UserDto>> GetAllAsync();
+        Task UpdateAsync(long Id, UserDto user);
+        Task DeleteAsync(long Id);
+        Task SubscriptionToGroupsAsync(long IdGroup, ICollection<long> IdUsers);
+        Task UnsubscriptionToGroupsAsync(long IdGroup, ICollection<long> IdUsers);
     }
 }

@@ -36,7 +36,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("send-letter")]
         public async Task<IActionResult> SendLetter(LetterVM letter)
         {
-            await _letterService.SendLetter(letter.TextBody, letter.TextSubject, letter.UsersId);
+            await _letterService.SendLetterAsync(letter.TextBody, letter.TextSubject, letter.UsersId);
 
             return Ok();
         }
@@ -44,7 +44,7 @@ namespace Mail.WebApi.Controllers
         [HttpGet("status-letter")]
         public IActionResult statusLetter()
         {
-            var result = _letterService.TakesFromCachePercentageCompletion();
+            var result = _letterService.TakesPercentageCompletion();
 
             return Ok(result);
         }
@@ -57,7 +57,7 @@ namespace Mail.WebApi.Controllers
                 return BadRequest();
             }
 
-            var dispatches = await _letterService.StatusLetterByUserId(id);
+            var dispatches = await _letterService.StatusLetterByUserIdAsync(id);
 
             var result = _mapper.Map<List<LetterStatusVM>>(dispatches);
 
@@ -72,7 +72,7 @@ namespace Mail.WebApi.Controllers
                 return BadRequest();
             }
 
-            var dispatches = await _letterService.GetById(id);
+            var dispatches = await _letterService.GetByIdAsync(id);
 
             var result = _mapper.Map<LetterVM>(dispatches);
 

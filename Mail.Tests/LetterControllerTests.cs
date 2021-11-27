@@ -41,8 +41,8 @@ namespace Mail.Tests
         [Test]
         public void AddWithExpectException()
         {
-            Assert.Throws<ArgumentException>(() => service.SendLetter("", "", new long[] { }).GetAwaiter().GetResult());
-            Assert.Throws<ArgumentNullException>(() => service.SendLetter("", "", null).GetAwaiter().GetResult());
+            Assert.Throws<ArgumentException>(() => service.SendLetterAsync("", "", new long[] { }).GetAwaiter().GetResult());
+            Assert.Throws<ArgumentNullException>(() => service.SendLetterAsync("", "", null).GetAwaiter().GetResult());
         }
 
         //[Test]

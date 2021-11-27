@@ -7,7 +7,7 @@ namespace Mail.Contracts.Repo
 {
     public interface ILetterStatusRepository : IBaseRepository<LetterUser, LetterStatusDto, long>
     {
-        Task<ICollection<LetterStatusDto>> UnsentLetters(); // rename
-        Task<ICollection<LetterStatusDto>> FindAllById(long Id);
+        Task<ICollection<LetterStatusDto>> GetLettersStrtusUnsentLettersAsync(); // rename
+        Task<ICollection<LetterStatusDto>> GetLettersStatusFindAllByIdUserIdASync(long Id);
     }
 }

@@ -26,34 +26,34 @@ namespace Mail.Business.Services
                 throw new ArgumentNullException(nameof(group));
             }
 
-            await _groupRepository.Add(group);
+            await _groupRepository.GetIDAddAsync(group);
         }
 
-        public async Task<ICollection<GroupDto>> GetAll()
+        public async Task<ICollection<GroupDto>> GetAllAsync()
         {
-            var groups = await _groupRepository.GetAll();
+            var groups = await _groupRepository.GetAllAsync();
             
             foreach (var item in groups)
             {
-                item.UsersId = await _userRepository.FindAllUsersOnGroup(item.Id);
+                item.UsersId = await _userRepository.GetUsersIdOnGroupAsync(item.Id);
             }
 
             return groups;
         }
 
-        public async Task Delete([Range(1, long.MaxValue)] long id)
+        public async Task DeleteAsync([Range(1, long.MaxValue)] long id)
         {
-            await _groupRepository.Delete(id);
+            await _groupRepository.DeleteAsync(id);
         }
 
-        public async Task Update([Range(1, long.MaxValue)] long id, GroupDto group)
+        public async Task UpdateAsync([Range(1, long.MaxValue)] long id, GroupDto group)
         {
             if (group == null)
             {
                 throw new ArgumentNullException(nameof(group));
             }
 
-            await _groupRepository.Update(id, group);
+            await _groupRepository.UpdateAsync(id, group);
         }
     }
 }

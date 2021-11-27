@@ -33,7 +33,7 @@ namespace Mail.WebApi.Controllers
         [HttpGet("get-groups-all")]
         public async Task<IActionResult> GetGroupAll()
         {
-            var groups = await _groupService.GetAll();
+            var groups = await _groupService.GetAllAsync();
 
             IActionResult result = groups == null ? NotFound() : Ok(_mapper.Map<List<GroupVM>>(groups));
 
@@ -56,7 +56,7 @@ namespace Mail.WebApi.Controllers
                 return BadRequest();
             }
 
-            await _groupService.Delete(Id);
+            await _groupService.DeleteAsync(Id);
 
             return Ok();
         }
@@ -64,7 +64,7 @@ namespace Mail.WebApi.Controllers
         [HttpPost("update-group")]
         public async Task<IActionResult> UpdateGroup([FromForm] GroupVM group)
         {
-            await _groupService.Update(group.Id, _mapper.Map<GroupDto>(group));
+            await _groupService.UpdateAsync(group.Id, _mapper.Map<GroupDto>(group));
 
             return Ok();
         }
