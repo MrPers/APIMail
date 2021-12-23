@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using Mail.Contracts.Services;
-using Mail.DTO.Models;
 using Mail.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Mail.WebApi.Controllers
@@ -33,6 +31,7 @@ namespace Mail.WebApi.Controllers
             _logger.LogInformation("Initialization");
         }
 
+        [Authorize("LetterAdministrator")]
         [HttpPost("send-letter")]
         public async Task<IActionResult> SendLetter(LetterVM letter)
         {
@@ -41,6 +40,7 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
+        [Authorize("LetterAdministrator")]
         [HttpGet("status-letter")]
         public IActionResult statusLetter()
         {
@@ -49,6 +49,7 @@ namespace Mail.WebApi.Controllers
             return Ok(result);
         }
 
+        [Authorize("LetterAdministrator")]
         [HttpGet("get-history-lette/{id}")]
         public async Task<IActionResult> StatusLetterByUserId([Range(1, long.MaxValue)] long id)
         {
@@ -64,6 +65,7 @@ namespace Mail.WebApi.Controllers
             return Ok(result);
         }
 
+        [Authorize("LetterAdministrator")]
         [HttpGet("get-lette/{id}")]
         public async Task<IActionResult> LetterByHistoryLetteId([Range(1, long.MaxValue)] long id)
         {

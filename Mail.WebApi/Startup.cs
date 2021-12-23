@@ -14,6 +14,10 @@ using Mail.Business.Services;
 using Mail.Business.Logics;
 using Mail.Contracts.Logics;
 using Mail.DTO.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using IdentityModel;
 
 namespace Mail.WebApi
 {
@@ -60,6 +64,36 @@ namespace Mail.WebApi
             services.AddControllers();
             services.AddMemoryCache();
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
+                {
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ClockSkew = TimeSpan.FromSeconds(5)
+                    };
+                    config.Authority = "https://localhost:10001";
+                    config.Audience = "Order";
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("User", authBuilder =>
+                {
+                    authBuilder.RequireRole(new string[] { "User", "Administrator" });
+                    authBuilder.RequireClaim("StatusEmail", new string[] { "False", "True" });
+                });
+                options.AddPolicy("LetterAdministrator", authBuilder =>
+                {
+                    authBuilder.RequireRole("Administrator");
+                    authBuilder.RequireClaim("StatusEmail", new string[] { "False", "True" });
+                });
+                options.AddPolicy("ALLAdministrator", authBuilder =>
+                {
+                    authBuilder.RequireRole("Administrator");
+                    authBuilder.RequireClaim("StatusEmail", "False");
+                });
+            });
+
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
         }
@@ -72,6 +106,10 @@ namespace Mail.WebApi
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 

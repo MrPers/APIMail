@@ -2,6 +2,7 @@
 using Mail.Contracts.Services;
 using Mail.DTO.Models;
 using Mail.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace Mail.WebApi.Controllers
             _logger.LogInformation("Initialization");
         }
 
+        [Authorize("User")]
         [HttpGet("get-groups-all")]
         public async Task<IActionResult> GetGroupAll()
         {
@@ -40,6 +42,7 @@ namespace Mail.WebApi.Controllers
             return result;
         }
 
+        [Authorize("ALLAdministrator")]
         [HttpPost("regist-group")]
         public async Task<IActionResult> RegisterGroup([FromForm] GroupVM group)
         {
@@ -48,6 +51,7 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
+        [Authorize("ALLAdministrator")]
         [HttpDelete("delete-group/{Id}")]
         public async Task<IActionResult> DeleteGroup([Range(1, long.MaxValue)] long Id)
         {
@@ -61,6 +65,7 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
+        [Authorize("ALLAdministrator")]
         [HttpPost("update-group")]
         public async Task<IActionResult> UpdateGroup([FromForm] GroupVM group)
         {

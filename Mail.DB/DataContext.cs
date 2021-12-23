@@ -1,10 +1,5 @@
 ﻿using Mail.DB.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mail.DB
 {
@@ -41,6 +36,10 @@ namespace Mail.DB
             modelBuilder.Entity<LetterUser>()
                 .Property(b => b.Status)
                 .HasDefaultValue(false);
+
+            modelBuilder.Entity<User>()
+                .Property(b => b.Surname)
+                .HasDefaultValue("RT");
 
             base.OnModelCreating(modelBuilder);
         }
