@@ -32,7 +32,7 @@ namespace Mail.WebApi.Controllers
             _logger.LogInformation("Initialization");
         }
 
-        [Authorize("ALLAdministrator")]
+        [Authorize("UserAdministrator")]
         [HttpDelete("delete-user/{Id}")]
         public async Task<IActionResult> DeleteUser([Range(1, long.MaxValue)] long Id)
         {
@@ -46,7 +46,7 @@ namespace Mail.WebApi.Controllers
             return Ok(true);
         }
 
-        [Authorize("User")]
+        [Authorize]
         [HttpGet("get-users-all")]
         public async Task<IActionResult> GetUsersAll()
         {
@@ -56,7 +56,7 @@ namespace Mail.WebApi.Controllers
             return result;
         }
 
-        [Authorize("ALLAdministrator")]
+        [Authorize("UserAdministrator")]
         [HttpPost("regist-user")]
         public async Task<IActionResult> RegisterUser([FromForm] UserVM user)
         {
@@ -65,7 +65,7 @@ namespace Mail.WebApi.Controllers
             return Ok(true);
         }
 
-        [Authorize("ALLAdministrator")]
+        [Authorize("UserAdministrator")]
         [HttpPost("update-user")]
         public async Task<IActionResult> UpdateUser([FromForm] UserVM user)
         {
@@ -74,7 +74,7 @@ namespace Mail.WebApi.Controllers
             return Ok(true);
         }
 
-        [Authorize("ALLAdministrator")]
+        [Authorize("UserAdministrator")]
         [HttpPost("delete-user-group")]
         public async Task<IActionResult> DeleteUserGroup(GroupUserReplyUI statusUserGroup)
         {

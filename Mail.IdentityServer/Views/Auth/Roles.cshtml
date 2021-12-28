@@ -1,0 +1,26 @@
+﻿@model Mail.IdentityServer.ViewModels.DisplayViewModel
+
+@{ }
+
+<div>
+    <div>
+        <h2>Role List</h2>
+        <ul>
+            @foreach (var role in Model.Roles)
+            {
+                <li>@role</li>
+            }
+        </ul>
+    </div>
+    <div>
+        <h2>User List</h2>
+        <ul>
+            @foreach (var role in Model.Users)
+            {
+                <li>@role</li>
+            }
+        </ul>
+    </div>
+    <partial name="_CreateRole" model="new Mail.IdentityServer.Models.Role()">
+ <partial name="_AddUserToRole" model="new Mail.IdentityServer.ViewModels.UpdateUserRoleViewModel() { Users = Model.Users, Roles = Model.Roles }">
+</div>

@@ -1,0 +1,31 @@
+﻿@model Mail.IdentityServer.ViewModels.UpdateUserRoleViewModel
+
+@{}
+
+<div>
+    <form asp-controller="Auth" asp-action="UpdateUserRole" method="post">
+        <h2>User to add </h2>
+        <ul>
+            @foreach (var user in Model.Users)
+            {
+                <li>
+                    <input type="radio" asp-for="User" value="@user.UserName" />
+                    @user
+                </li>
+            }
+        </ul>
+        <h2>Roles to add</h2>
+        <ul>
+            @foreach (var role in Model.Roles)
+            {
+                <li>
+                    <input type="radio" asp-for="Role" value="@role" />
+                    @role
+                </li>
+            }
+        </ul>
+        <input type="submit" value="Add Role" />
+        <input type="hidden" asp-for="Delete" value="false" id="delete" />
+        <input type="submit" value="Delete Role" onclick="document.getElementById('delete').value = 'true'" />
+    </form>
+</div>

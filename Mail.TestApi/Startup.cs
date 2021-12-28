@@ -28,20 +28,22 @@ namespace Mail.WebApi
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("User", authBuilder =>
-                {
-                    authBuilder.RequireRole(new string[] { "User", "Administrator" });
-                    authBuilder.RequireClaim("StatusEmail", new string[] { "False", "True" });
-                });
-                options.AddPolicy("LetterAdministrator", authBuilder =>
+                options.AddPolicy("GroupAdministrator", authBuilder =>
                 {
                     authBuilder.RequireRole("Administrator");
-                    authBuilder.RequireClaim("StatusEmail", new string[] { "False", "True" });
+                    authBuilder.RequireClaim("Group", "True");
+                });
+                options.AddPolicy("UserAdministrator", authBuilder =>
+                {
+                    authBuilder.RequireRole("Administrator");
+                    authBuilder.RequireClaim("User", "True");
                 });
                 options.AddPolicy("ALLAdministrator", authBuilder =>
                 {
                     authBuilder.RequireRole("Administrator");
-                    authBuilder.RequireClaim("StatusEmail", "False");
+                    authBuilder.RequireClaim("Group", "True");
+                    authBuilder.RequireClaim("User", "True");
+                    authBuilder.RequireClaim("Letter", "True");
                 });
             });
 

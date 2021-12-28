@@ -42,15 +42,16 @@ namespace Mail.IdentityServer.Infrastructure
             //        //4)
             //        context.Subject.Identity.Name
 
-
-            var claims = new List<Claim>
+            var claims = new List<Claim>();
+            var scops = context.Subject.FindAll(JwtClaimTypes.Scope).ToList();
+            foreach (var item in scops)
             {
-                new Claim("StatusEmail", Convert.ToString(user.Email is string)),
-                context.Subject.FindFirst(JwtClaimTypes.Role),
-            };
+                claims.Add(new Claim(item.Value, "True"));
+            }
 
-            context.IssuedClaims.AddRange(claims);
-            //return Task.CompletedTask;
+            claims.Add((Claim)context.Subject.FindFirst(JwtClaimTypes.Role));
+
+           context.IssuedClaims.AddRange(claims);
         }
 
         // This method gets called whenever identity server needs to determine if the user is valid or active (e.g. if the user's account has been deactivated since they logged in).

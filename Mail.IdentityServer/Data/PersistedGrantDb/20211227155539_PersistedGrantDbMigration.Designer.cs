@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mail.IdentityServer.Data.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20211221104644_PersistedGrantDbMigration")]
+    [Migration("20211227155539_PersistedGrantDbMigration")]
     partial class PersistedGrantDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -13,14 +13,11 @@ namespace Mail.WebApi.Controllers
 
         }
 
-        [Authorize("ALLAdministrator")]
+        [Authorize]
         [HttpGet("secret")]
         public async Task<IActionResult> Secret()
         {
-            //var i = new { data = "Secret string from Orders API" };
-            //var js = Json(i);
             return Ok("Secret string from Orders API");
-            //return Ok("Secret string from Orders API");
         }
     }
 }

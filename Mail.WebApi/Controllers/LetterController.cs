@@ -31,7 +31,7 @@ namespace Mail.WebApi.Controllers
             _logger.LogInformation("Initialization");
         }
 
-        [Authorize("LetterAdministrator")]
+        [Authorize("ALLAdministrator")]
         [HttpPost("send-letter")]
         public async Task<IActionResult> SendLetter(LetterVM letter)
         {
@@ -40,7 +40,7 @@ namespace Mail.WebApi.Controllers
             return Ok();
         }
 
-        [Authorize("LetterAdministrator")]
+        [Authorize("ALLAdministrator")]
         [HttpGet("status-letter")]
         public IActionResult statusLetter()
         {
@@ -49,7 +49,7 @@ namespace Mail.WebApi.Controllers
             return Ok(result);
         }
 
-        [Authorize("LetterAdministrator")]
+        [Authorize("ALLAdministrator")]
         [HttpGet("get-history-lette/{id}")]
         public async Task<IActionResult> StatusLetterByUserId([Range(1, long.MaxValue)] long id)
         {
@@ -65,7 +65,7 @@ namespace Mail.WebApi.Controllers
             return Ok(result);
         }
 
-        [Authorize("LetterAdministrator")]
+        [Authorize("ALLAdministrator")]
         [HttpGet("get-lette/{id}")]
         public async Task<IActionResult> LetterByHistoryLetteId([Range(1, long.MaxValue)] long id)
         {

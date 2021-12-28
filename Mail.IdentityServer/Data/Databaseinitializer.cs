@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -56,13 +57,13 @@ namespace Mail.IdentityServer.Data
 
                 var userManager = scopeServiceProvider.GetService<UserManager<User>>();
                 var roleManager = scopeServiceProvider.GetService<RoleManager<Role>>();
+                //var claimManager = scopeServiceProvider.GetService<ClimeManager<Claim>>();
 
                 User[] users = new User[] {
-                    new User("AdministratorLetter"){Email = "iamanton@ukr.net"},
-                    new User("AdministratorALL"),
+                    new User("AdministratorALL"){Email = "iamanton@ukr.net"},
+                    new User("AdministratorGroup"){Email = "iamanton@ukr.net"},
+                    new User("AdministratorUser"){Email = "iamanton@ukr.net"},
                     new User("User"),
-                    //new User("User1"){Email = "iamanton@ukr.net"},
-                    //new User("User2"){Email = "iamanton@ukr.net"},
                 };
 
                 Role[] role = new Role[] {
@@ -70,20 +71,41 @@ namespace Mail.IdentityServer.Data
                     new Role{Name = "User"},
                 };
 
-                //var result1 = userManager.CreateAsync(users[0], "12qw!Q").GetAwaiter().GetResult().Succeeded;
+                Claim[] claims = new Claim[] {
+                    new Claim(JwtClaimTypes.Scope, "Group"),
+                    new Claim(JwtClaimTypes.Scope, "User"),
+                    new Claim(JwtClaimTypes.Scope, "Letter"),
+                    //new Claim(){Type = JwtClaimTypes.Scope, Value = "Group" },
+                    //new Claim(){Type = JwtClaimTypes.Scope, Value = "User" },
+                    //new Claim(){Type = JwtClaimTypes.Scope, Value = "Letter" },
+                };
+
+                //contextNew.Claims.AddRange(claims);
+                //context.SaveChanges();
+
+                roleManager.CreateAsync(role[0]).GetAwaiter().GetResult();
+                roleManager.CreateAsync(role[1]).GetAwaiter().GetResult();
                 userManager.CreateAsync(users[0], "12qw!Q").GetAwaiter().GetResult();
                 userManager.CreateAsync(users[1], "12qw!Q").GetAwaiter().GetResult();
                 userManager.CreateAsync(users[2], "12qw!Q").GetAwaiter().GetResult();
-                //userManager.CreateAsync(users[3], "12qw!Q").GetAwaiter().GetResult();
-                roleManager.CreateAsync(role[0]).GetAwaiter().GetResult();
-                roleManager.CreateAsync(role[1]).GetAwaiter().GetResult();
-                //userManager.AddClaimAsync(users[0], new Claim(ClaimTypes.Role, "Administrator")).GetAwaiter().GetResult();
-                //userManager.AddClaimAsync(users[1], new Claim(ClaimTypes.Role, "User")).GetAwaiter().GetResult();
+                userManager.CreateAsync(users[3], "12qw!Q").GetAwaiter().GetResult();
+
+                //contextNew.UserClaims.Add(new UserClaim() { User = users[0], Claim = claims[0] });
+                //contextNew.UserClaims.Add(new UserClaim() { User = users[0], Claim = claims[1] });
+                //contextNew.UserClaims.Add(new UserClaim() { User = users[0], Claim = claims[2] });
+                //contextNew.UserClaims.Add(new UserClaim() { User = users[1], Claim = claims[0] });
+                //contextNew.UserClaims.Add(new UserClaim() { User = users[2], Claim = claims[1] });
+                userManager.AddClaimAsync(users[1], claims[0]).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(users[2], claims[1]).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(users[0], claims[0]).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(users[0], claims[2]).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(users[0], claims[1]).GetAwaiter().GetResult();
                 userManager.AddToRoleAsync(users[0], "Administrator").GetAwaiter().GetResult();
                 userManager.AddToRoleAsync(users[1], "Administrator").GetAwaiter().GetResult();
-                userManager.AddToRoleAsync(users[2], "User").GetAwaiter().GetResult();
-                //userManager.AddToRoleAsync(users[3], "User").GetAwaiter().GetResult();
-                userManager.AddClaimAsync(users[0], new Claim(JwtClaimTypes.Scope, "Order")).GetAwaiter().GetResult();
+                userManager.AddToRoleAsync(users[2], "Administrator").GetAwaiter().GetResult();
+                userManager.AddToRoleAsync(users[3], "User").GetAwaiter().GetResult();
+
+                //context.SaveChanges();
             }
         }
     }

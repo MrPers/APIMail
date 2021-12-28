@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mail.IdentityServer.Data.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20211221104652_ConfigurationDbMigration")]
+    [Migration("20211227155559_ConfigurationDbMigration")]
     partial class ConfigurationDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

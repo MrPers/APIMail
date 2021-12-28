@@ -1,6 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Services;
+using Mail.IdentityServer.Data;
 using Mail.IdentityServer.Models;
 using Mail.IdentityServer.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -14,14 +16,20 @@ namespace Mail.IdentityServer.Controllers
         private readonly IIdentityServerInteractionService _interactionService;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly DataContext _context;
 
         public AuthController(
             IIdentityServerInteractionService interactionService,
+            DataContext context,
             SignInManager<User> signInManager,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager)
         {
+            _context = context;
             _interactionService = interactionService;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _userManager = userManager;
         }
 
@@ -91,7 +99,10 @@ namespace Mail.IdentityServer.Controllers
             }
 
             var user = new User(vm.UserName);
-            var result = await _userManager.CreateAsync(user, vm.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, vm.Password);
+            await _userManager.CreateAsync(user, vm.Password);
+
+            _userManager.AddToRoleAsync(user, "User").GetAwaiter().GetResult(); //add role User
 
             if (result.Succeeded)
             {
@@ -147,6 +158,7 @@ namespace Mail.IdentityServer.Controllers
 
             var user = new User(vm.UserName);
             var result = await _userManager.CreateAsync(user);
+            _userManager.AddToRoleAsync(user, "User").GetAwaiter().GetResult(); //add role User
 
             if (!result.Succeeded)
             {
@@ -163,6 +175,41 @@ namespace Mail.IdentityServer.Controllers
             await _signInManager.SignInAsync(user, false);
 
             return Redirect(vm.ReturnUrl);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult Roles()
+        {
+            var roles = _context.Roles.ToList();
+            var users = _context.Users.ToList();
+            var userRoles = _context.UserRoles.ToList();
+
+            return View(new DisplayViewModel
+            {
+                Roles = roles,//.Select(x => x.NormalizedName),
+                Users = users,//.Select(x => x.NormalizedUserName),
+            });
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateRole(Role vm)
+        {
+            await _roleManager.CreateAsync(new Role { Name = vm.Name });
+
+            return RedirectToAction("Roles");
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UpdateUserRole(UpdateUserRoleViewModel vm)
+        {
+            var user = await _userManager.FindByIdAsync(vm.User.Id.ToString());
+
+            if (vm.Delete)
+                await _userManager.RemoveFromRoleAsync(user, vm.Role.Name);
+            else
+                await _userManager.AddToRoleAsync(user, vm.Role.Name);
+
+            return RedirectToAction("Roles");
         }
     }
 }
